@@ -8,10 +8,7 @@ directly from the environment so the AI engineer can develop independently.
 
 import os
 
-from dotenv import load_dotenv
 from google import genai
-
-load_dotenv()  # picks up backend/.env when running scripts directly
 
 _api_key = os.environ.get("GOOGLE_API_KEY")
 if not _api_key:
