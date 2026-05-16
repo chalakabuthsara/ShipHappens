@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from uuid import UUID, uuid4
 
-from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import Column, String
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlmodel import Field, SQLModel
 
 
@@ -18,7 +18,7 @@ class GeneratedQuestion(SQLModel, table=True):
     question_text: str
     question_type: str  # "mcq", "structured", "calculation"
     topic: str
-    subtopics: list[str] = Field(default_factory=list)
+    subtopics: list[str] = Field(default_factory=list, sa_column=Column(ARRAY(String)))
     difficulty: str
     marks: int
     solution: str
@@ -27,4 +27,4 @@ class GeneratedQuestion(SQLModel, table=True):
     generation_metadata: dict = Field(
         default_factory=dict, sa_column=Column(JSONB)
     )  # Generation params used
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

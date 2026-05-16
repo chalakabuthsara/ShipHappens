@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from uuid import UUID, uuid4
 
 from sqlalchemy import Column
@@ -12,4 +12,4 @@ class SourceFile(SQLModel, table=True):
     filename: str
     storage_path: str  # uploads/{session_id}/{file_uuid}.pdf
     gemini_file_uri: str | None = None  # cached Gemini Files API URI
-    uploaded_at: datetime = Field(default_factory=datetime.utcnow)
+    uploaded_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

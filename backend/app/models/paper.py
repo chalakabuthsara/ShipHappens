@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from uuid import UUID, uuid4
 
 from sqlalchemy import Column
@@ -11,4 +11,4 @@ class Paper(SQLModel, table=True):
     session_id: UUID = Field(foreign_key="session.id", unique=True, index=True)
     blueprint_json: dict = Field(default_factory=dict, sa_column=Column(JSONB))
     paper_json: dict = Field(default_factory=dict, sa_column=Column(JSONB))
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
