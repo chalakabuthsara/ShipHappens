@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShipHappens — Smart Paper Generator | Build Plan</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --ink: #1c2333;
+      --ink-muted: #5c6578;
+      --border: #dde1e8;
+      --surface: #f6f7f9;
+      --accent: #1e3a5f;
+      --accent-soft: #e8eef5;
+      --link: #1e4976;
+      --success: #2e7d32;
+      --success-bg: #e8f5e9;
+      --warning: #ed6c02;
+      --warning-bg: #fff4e5;
+      --owner-ai: #7b1fa2;
+      --owner-ai-bg: #f3e5f5;
+      --owner-fs1: #1565c0;
+      --owner-fs1-bg: #e3f2fd;
+      --owner-fs2: #00838f;
+      --owner-fs2-bg: #e0f7fa;
+      --owner-fe: #ef6c00;
+      --owner-fe-bg: #fff3e0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.65; color: var(--ink); background: #fff; font-size: 15px; }
+    header { background: var(--accent); color: #fff; padding: 44px 28px 36px; text-align: center; border-bottom: 4px solid #0f2744; }
+    header .kicker { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+    header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 1.85rem; font-weight: 600; margin-bottom: 10px; line-height: 1.25; }
+    header .subtitle { color: rgba(255,255,255,0.85); font-size: 1rem; max-width: 720px; margin: 0 auto; }
+    header .meta { margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; max-width: 1000px; margin: 0 auto; }
+    nav a { color: var(--link); text-decoration: none; font-size: 0.82rem; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 1040px; margin: 0 auto; padding: 36px 24px 48px; }
+    section { margin-bottom: 48px; }
+    h2 { font-family: Georgia, serif; font-size: 1.38rem; color: var(--ink); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    h3 { font-size: 1.05rem; color: var(--ink); margin: 24px 0 10px; font-weight: 600; }
+    h4 { font-size: 0.95rem; color: var(--ink); margin: 16px 0 8px; font-weight: 600; }
+    p { margin-bottom: 14px; color: var(--ink-muted); }
+    .section-lead { font-size: 0.95rem; max-width: 56em; margin-bottom: 16px; }
+    .diagram-container { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 16px 0; overflow-x: auto; }
+    .diagram-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); margin-bottom: 16px; font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; }
+    .table-wrap { overflow-x: auto; margin: 18px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface); font-weight: 600; color: var(--ink-muted); }
+    .data-table { margin: 16px 0; }
+    .data-table th { background: var(--accent-soft); color: var(--accent); }
+    .data-table code { background: #f0f2f5; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; font-family: 'Consolas', 'Monaco', monospace; }
+    code { background: #f0f2f5; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; font-family: 'Consolas', 'Monaco', monospace; }
+    pre { background: #0f1729; color: #e6edf6; padding: 16px 18px; border-radius: 6px; overflow-x: auto; font-size: 0.83rem; line-height: 1.55; font-family: 'Consolas', 'Monaco', monospace; margin: 12px 0; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    .required { color: var(--warning); font-weight: 600; }
+    .optional { color: var(--ink-muted); font-style: italic; }
+    .method-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; font-family: 'Consolas', monospace; text-transform: uppercase; letter-spacing: 0.04em; }
+    .method-get { background: #e8f5e9; color: #2e7d32; }
+    .method-post { background: #fff4e5; color: #ed6c02; }
+    .method-put { background: #e3f2fd; color: #1565c0; }
+    .method-action { background: #f3e5f5; color: #7b1fa2; }
+    .callout { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+    .callout-title { font-weight: 600; color: var(--accent); margin-bottom: 8px; font-size: 0.9rem; }
+    .callout p { margin-bottom: 0; }
+    .callout-warning { background: var(--warning-bg); border-left-color: var(--warning); }
+    .callout-warning .callout-title { color: var(--warning); }
+    .callout-success { background: var(--success-bg); border-left-color: var(--success); }
+    .callout-success .callout-title { color: var(--success); }
+    .ui-mapping { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px; margin: 12px 0; }
+    .ui-mapping-header { font-weight: 600; color: var(--ink); margin-bottom: 8px; font-size: 0.95rem; }
+    .ui-mapping-list { list-style: none; padding-left: 0; }
+    .ui-mapping-list li { padding: 6px 0; border-bottom: 1px solid #eef0f3; color: var(--ink-muted); font-size: 0.9rem; }
+    .ui-mapping-list li:last-child { border-bottom: none; }
+    .owner-card { border: 1px solid var(--border); border-radius: 8px; padding: 0; margin: 18px 0; overflow: hidden; }
+    .owner-card .owner-head { padding: 14px 18px; color: #fff; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .owner-card .owner-head h3 { color: #fff; margin: 0; font-size: 1.02rem; }
+    .owner-card .owner-head .role { font-size: 0.78rem; opacity: 0.85; font-weight: 500; }
+    .owner-card .owner-body { padding: 16px 18px 20px; background: #fff; }
+    .owner-card.ai .owner-head { background: var(--owner-ai); }
+    .owner-card.fs1 .owner-head { background: var(--owner-fs1); }
+    .owner-card.fs2 .owner-head { background: var(--owner-fs2); }
+    .owner-card.fe .owner-head { background: var(--owner-fe); }
+    .owner-card .task { padding: 10px 0; border-bottom: 1px solid #eef0f3; font-size: 0.9rem; color: var(--ink-muted); }
+    .owner-card .task:last-child { border-bottom: none; }
+    .owner-card .task .hours { display: inline-block; min-width: 70px; font-family: 'Consolas', monospace; font-size: 0.78rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; background: var(--surface); color: var(--ink); margin-right: 10px; }
+    .owner-card .dod { margin-top: 14px; padding: 10px 14px; background: var(--success-bg); border-left: 3px solid var(--success); border-radius: 0 4px 4px 0; font-size: 0.85rem; color: var(--ink); }
+    .owner-card .dod strong { color: var(--success); }
+    .timeline-table { font-size: 0.82rem; }
+    .timeline-table th, .timeline-table td { padding: 6px 8px; text-align: center; font-size: 0.78rem; border: 1px solid #eef0f3; }
+    .timeline-table th:first-child, .timeline-table td:first-child { text-align: left; font-weight: 600; background: var(--surface); }
+    .timeline-table .blk-ai { background: var(--owner-ai-bg); color: var(--owner-ai); font-weight: 600; }
+    .timeline-table .blk-fs1 { background: var(--owner-fs1-bg); color: var(--owner-fs1); font-weight: 600; }
+    .timeline-table .blk-fs2 { background: var(--owner-fs2-bg); color: var(--owner-fs2); font-weight: 600; }
+    .timeline-table .blk-fe { background: var(--owner-fe-bg); color: var(--owner-fe); font-weight: 600; }
+    .timeline-table .milestone { background: #fffde7; color: #f57f17; font-weight: 700; font-size: 0.72rem; }
+    .owner-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; }
+    .owner-pill.ai { background: var(--owner-ai-bg); color: var(--owner-ai); }
+    .owner-pill.fs1 { background: var(--owner-fs1-bg); color: var(--owner-fs1); }
+    .owner-pill.fs2 { background: var(--owner-fs2-bg); color: var(--owner-fs2); }
+    .owner-pill.fe { background: var(--owner-fe-bg); color: var(--owner-fe); }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; color: var(--ink-muted); font-size: 0.82rem; }
+    footer .disclaimer { max-width: 700px; margin: 12px auto 0; font-size: 0.78rem; line-height: 1.5; }
+    @media print { nav { display: none; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Build Plan &amp; Team Handoff — MVP v0.1</p>
+  <h1>ShipHappens — Smart Paper Generator</h1>
+  <p class="subtitle">A 20-hour MVP: teachers upload 3–5 past papers, Gemini extracts a paper blueprint and generates a new paper in the same structure, every question is editable in the browser, output is a printable PDF.</p>
+  <p class="meta">Team: 1 AI Engineer · 2 Full-Stack · 1 Frontend &nbsp;|&nbsp; Demo subject: A-Level English &nbsp;|&nbsp; Architecture: subject-agnostic</p>
+</header>
+
+<nav aria-label="Section navigation">
+  <ul>
+    <li><a href="#intro">Introduction</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#sequences">Sequences</a></li>
+    <li><a href="#data-models">Data Models</a></li>
+    <li><a href="#api-contracts">API Contracts</a></li>
+    <li><a href="#ui-mapping">UI Mapping</a></li>
+    <li><a href="#team">Team Tasks</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#config">Config</a></li>
+    <li><a href="#risks">Risks &amp; Cuts</a></li>
+    <li><a href="#terms">Glossary</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ============================================ -->
+<section id="intro">
+  <h2>1. Introduction</h2>
+  <p class="section-lead">ShipHappens is a paper-generator for teachers. The teacher uploads 3–5 past exam papers; Gemini analyses them, extracts the structural blueprint (sections, question types, marks distribution, instruction patterns, tone), and generates a new paper of the same shape. The teacher then edits any question in the browser, regenerates individual questions on demand, and exports the result to PDF.</p>
+
+  <div class="callout">
+    <div class="callout-title">System Summary</div>
+    <p>A <strong>Next.js</strong> wizard walks the teacher through four steps: Upload, Blueprint Review, Editable Paper, Export. A <strong>FastAPI</strong> backend handles file uploads, Gemini calls, and persistence. <strong>Supabase</strong> provides managed Postgres (sessions, papers, source files) and Storage (uploaded PDFs). The <strong>Gemini API</strong> handles every AI call — three prompts total: blueprint extraction, paper generation, and per-question regeneration. PDFs go to Gemini directly via the Files API; there is no embedding pipeline and no vector database.</p>
+  </div>
+
+  <div class="callout callout-success">
+    <div class="callout-title">LLM Call Budget</div>
+    <p>Per session: <strong>1 call</strong> for blueprint extraction, <strong>1 call</strong> for paper generation, plus one fast call per question the teacher regenerates. Files are uploaded to the Gemini Files API exactly once per session and reused across all three prompts (cached as <code>gemini_file_uri</code> on each <code>SourceFile</code> row).</p>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">MVP Scope</div>
+    <p>This is a proof of concept for a 20-hour buildathon. <strong>Out of scope:</strong> authentication, multi-tenant separation, vector search / RAG, per-section regeneration, server-rendered PDF (we use the browser's print dialog), email export, paper history, and curriculum-aware difficulty calibration. Demo content is A-Level English; the architecture is subject-agnostic.</p>
+  </div>
+
+  <h3>1.1 Stack at a Glance</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Next.js 14 (App Router) + TypeScript + Tailwind + shadcn/ui</td><td>Junior-friendly, great component library, easy print preview via iframe</td></tr>
+        <tr><td>Backend</td><td>FastAPI + Uvicorn + SQLModel + Pydantic v2</td><td>Already scaffolded in <code>pyproject.toml</code>; pairs cleanly with Gemini structured output</td></tr>
+        <tr><td>Database</td><td>Supabase (Postgres)</td><td>Zero local setup; same connection works for all 4 laptops</td></tr>
+        <tr><td>File storage</td><td>Supabase Storage (private bucket <code>uploads</code>)</td><td>No disk-state syncing across devs; survives container restarts</td></tr>
+        <tr><td>AI</td><td>Google <code>google-genai</code> SDK · <code>gemini-2.5-pro</code> + <code>gemini-2.5-flash</code></td><td>Pro for full-paper generation, Flash for fast regenerations and blueprint extraction</td></tr>
+        <tr><td>PDF export</td><td>Server-rendered HTML via Jinja2 + browser <code>window.print()</code></td><td>Zero PDF dependencies; reliable on Windows; WeasyPrint as stretch</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="architecture">
+  <h2>2. System Architecture</h2>
+  <p class="section-lead">A standard client/server split: Next.js in the browser, FastAPI on the server, Supabase + Gemini as managed dependencies. There are no background workers, no queues, and no WebSockets in v1.</p>
+
+  <div class="diagram-container">
+    <div class="diagram-title">System Context Diagram</div>
+    <svg viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif" style="width:100%;height:auto;max-width:1200px;">
+      <defs>
+        <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.1"/>
+        </filter>
+        <marker id="arrowGray" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+          <polygon points="0 0, 12 4, 0 8" fill="#555"/>
+        </marker>
+        <marker id="arrowDash" viewBox="0 0 12 8" refX="10" refY="4" markerWidth="10" markerHeight="7" orient="auto-start-reverse">
+          <polygon points="0 0, 12 4, 0 8" fill="#888"/>
+        </marker>
+      </defs>
+
+      <!-- Teacher -->
+      <g filter="url(#shadow)">
+        <rect x="490" y="20" width="220" height="75" rx="6" fill="#D5E8D4" stroke="#82b366" stroke-width="1.5"/>
+        <text x="600" y="50" text-anchor="middle" font-size="13" font-weight="600" fill="#000">Teacher</text>
+        <text x="600" y="68" text-anchor="middle" font-size="10" fill="#000">Uploads past papers,</text>
+        <text x="600" y="82" text-anchor="middle" font-size="10" fill="#000">edits + exports generated paper</text>
+      </g>
+
+      <!-- Browser box -->
+      <rect x="40" y="135" width="340" height="455" rx="8" fill="#fff" stroke="#555" stroke-width="1.5"/>
+      <text x="60" y="158" font-size="10" font-weight="600" fill="#000" letter-spacing="0.5">BROWSER · Next.js (App Router)</text>
+
+      <g filter="url(#shadow)">
+        <rect x="65" y="175" width="290" height="56" rx="6" fill="#DAE8FC" stroke="#6c8ebf" stroke-width="1.5"/>
+        <text x="210" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#000">4-Step Wizard UI</text>
+        <text x="210" y="215" text-anchor="middle" font-size="10" fill="#000">Upload · Blueprint · Paper · Export</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="65" y="250" width="290" height="46" rx="6" fill="#DAE8FC" stroke="#6c8ebf" stroke-width="1.5"/>
+        <text x="210" y="271" text-anchor="middle" font-size="11" font-weight="600" fill="#000">Zustand Session Store</text>
+        <text x="210" y="287" text-anchor="middle" font-size="10" fill="#000">sessionId · blueprint · paper</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="65" y="315" width="290" height="46" rx="6" fill="#DAE8FC" stroke="#6c8ebf" stroke-width="1.5"/>
+        <text x="210" y="336" text-anchor="middle" font-size="11" font-weight="600" fill="#000">SWR / fetch wrapper</text>
+        <text x="210" y="352" text-anchor="middle" font-size="10" fill="#000">credentials: 'include' · sid cookie</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="65" y="380" width="290" height="58" rx="6" fill="#FFE9D6" stroke="#ef6c00" stroke-width="1.5"/>
+        <text x="210" y="402" text-anchor="middle" font-size="11" font-weight="600" fill="#000">Editable Paper Components</text>
+        <text x="210" y="418" text-anchor="middle" font-size="10" fill="#000">shadcn Card · Textarea · Accordion</text>
+        <text x="210" y="431" text-anchor="middle" font-size="10" fill="#000">react-dropzone for upload</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="65" y="455" width="290" height="56" rx="6" fill="#FFE9D6" stroke="#ef6c00" stroke-width="1.5"/>
+        <text x="210" y="476" text-anchor="middle" font-size="11" font-weight="600" fill="#000">PDF Preview (iframe)</text>
+        <text x="210" y="492" text-anchor="middle" font-size="10" fill="#000">window.print() → Save as PDF</text>
+      </g>
+
+      <!-- Server box -->
+      <rect x="425" y="135" width="395" height="455" rx="8" fill="#fff" stroke="#555" stroke-width="1.5"/>
+      <text x="445" y="158" font-size="10" font-weight="600" fill="#000" letter-spacing="0.5">SERVER · FastAPI (Uvicorn)</text>
+
+      <g filter="url(#shadow)">
+        <rect x="450" y="175" width="345" height="80" rx="6" fill="#DAE8FC" stroke="#6c8ebf" stroke-width="1.5"/>
+        <text x="622" y="197" text-anchor="middle" font-size="12" font-weight="600" fill="#000">HTTP Routes (REST)</text>
+        <text x="622" y="216" text-anchor="middle" font-size="10" fill="#000">POST /sessions · /upload · /blueprint · /generate</text>
+        <text x="622" y="230" text-anchor="middle" font-size="10" fill="#000">PUT /paper · POST /questions/:id/regenerate</text>
+        <text x="622" y="244" text-anchor="middle" font-size="10" fill="#000">GET /paper/export.html</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="450" y="275" width="345" height="76" rx="6" fill="#F3E5F5" stroke="#7b1fa2" stroke-width="1.5"/>
+        <text x="622" y="297" text-anchor="middle" font-size="12" font-weight="600" fill="#000">AI Module (backend/ai/)</text>
+        <text x="622" y="315" text-anchor="middle" font-size="10" fill="#000">blueprint.py · generate.py · regenerate.py</text>
+        <text x="622" y="329" text-anchor="middle" font-size="10" fill="#000">Pydantic response_schema · structured output</text>
+        <text x="622" y="343" text-anchor="middle" font-size="10" fill="#000">3 prompts total · 2 model tiers</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="450" y="371" width="345" height="60" rx="6" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <text x="622" y="392" text-anchor="middle" font-size="12" font-weight="600" fill="#000">Storage Adapter (storage.py)</text>
+        <text x="622" y="409" text-anchor="middle" font-size="10" fill="#000">Supabase Storage upload + signed URL</text>
+        <text x="622" y="423" text-anchor="middle" font-size="10" fill="#000">Gemini Files API cache (per SourceFile row)</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="450" y="451" width="345" height="60" rx="6" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <text x="622" y="472" text-anchor="middle" font-size="12" font-weight="600" fill="#000">DB Layer (SQLModel · psycopg)</text>
+        <text x="622" y="489" text-anchor="middle" font-size="10" fill="#000">Session · SourceFile · Paper</text>
+        <text x="622" y="503" text-anchor="middle" font-size="10" fill="#000">create_all() on startup</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="450" y="531" width="345" height="48" rx="6" fill="#FFF2CC" stroke="#d6b656" stroke-width="1.5"/>
+        <text x="622" y="552" text-anchor="middle" font-size="11" font-weight="600" fill="#000">Jinja2 Template + Print CSS</text>
+        <text x="622" y="568" text-anchor="middle" font-size="10" fill="#000">templates/paper.html.j2 → /export.html</text>
+      </g>
+
+      <!-- External right column -->
+      <g filter="url(#shadow)">
+        <rect x="860" y="175" width="300" height="100" rx="6" fill="#FCE4EC" stroke="#c62828" stroke-width="1.5"/>
+        <text x="1010" y="200" text-anchor="middle" font-size="12" font-weight="600" fill="#000">Google Gemini API</text>
+        <text x="1010" y="220" text-anchor="middle" font-size="10" fill="#000">gemini-2.5-pro (paper generation)</text>
+        <text x="1010" y="235" text-anchor="middle" font-size="10" fill="#000">gemini-2.5-flash (blueprint + regen)</text>
+        <text x="1010" y="250" text-anchor="middle" font-size="10" fill="#000">Files API (PDF inputs, cached)</text>
+        <text x="1010" y="265" text-anchor="middle" font-size="10" fill="#000">Structured output via response_schema</text>
+      </g>
+
+      <g filter="url(#shadow)" transform="translate(1010, 360)">
+        <ellipse cx="0" cy="-30" rx="150" ry="16" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <rect x="-150" y="-30" width="300" height="55" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <ellipse cx="0" cy="25" rx="150" ry="16" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <text x="0" y="-5" text-anchor="middle" font-size="11" font-weight="600" fill="#00525c">Supabase Postgres</text>
+        <text x="0" y="13" text-anchor="middle" font-size="10" fill="#00525c">sessions · source_files · papers</text>
+      </g>
+
+      <g filter="url(#shadow)" transform="translate(1010, 490)">
+        <ellipse cx="0" cy="-30" rx="150" ry="16" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <rect x="-150" y="-30" width="300" height="55" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <ellipse cx="0" cy="25" rx="150" ry="16" fill="#E0F7FA" stroke="#00838f" stroke-width="1.5"/>
+        <text x="0" y="-5" text-anchor="middle" font-size="11" font-weight="600" fill="#00525c">Supabase Storage</text>
+        <text x="0" y="13" text-anchor="middle" font-size="10" fill="#00525c">uploads/{session_id}/{file}.pdf</text>
+      </g>
+
+      <!-- Arrows -->
+      <line x1="600" y1="95" x2="210" y2="170" stroke="#555" stroke-width="2" marker-end="url(#arrowGray)"/>
+      <text x="385" y="125" text-anchor="middle" font-size="10" fill="#000">opens in browser</text>
+
+      <line x1="380" y1="280" x2="420" y2="220" stroke="#555" stroke-width="2" marker-end="url(#arrowGray)"/>
+      <text x="400" y="240" text-anchor="end" font-size="9" fill="#000">HTTPS JSON</text>
+      <line x1="420" y1="240" x2="380" y2="300" stroke="#555" stroke-width="2" marker-end="url(#arrowGray)"/>
+
+      <line x1="800" y1="305" x2="858" y2="220" stroke="#555" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrowDash)"/>
+      <rect x="800" y="252" width="60" height="14" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/>
+      <text x="830" y="263" text-anchor="middle" font-size="9" fill="#000">genai SDK</text>
+
+      <line x1="800" y1="395" x2="858" y2="370" stroke="#555" stroke-width="2" marker-end="url(#arrowGray)"/>
+      <line x1="800" y1="395" x2="858" y2="490" stroke="#555" stroke-width="2" marker-end="url(#arrowGray)"/>
+      <line x1="800" y1="475" x2="858" y2="360" stroke="#555" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrowDash)"/>
+      <rect x="805" y="430" width="55" height="14" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/>
+      <text x="832" y="441" text-anchor="middle" font-size="9" fill="#000">supabase</text>
+
+      <g transform="translate(40, 690)">
+        <rect x="-10" y="-18" width="600" height="30" rx="3" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+        <text x="0" y="0" font-size="10" font-weight="600" fill="#000">LEGEND:</text>
+        <line x1="65" y1="-3" x2="95" y2="-3" stroke="#555" stroke-width="2"/>
+        <polygon points="95,-6 103,-3 95,0" fill="#555"/>
+        <text x="110" y="0" font-size="10" fill="#000">Sync data flow</text>
+        <line x1="220" y1="-3" x2="250" y2="-3" stroke="#888" stroke-width="2" stroke-dasharray="5 3"/>
+        <polygon points="250,-6 258,-3 250,0" fill="#888"/>
+        <text x="265" y="0" font-size="10" fill="#000">External / SDK call</text>
+      </g>
+    </svg>
+  </div>
+
+  <h3>2.1 Component Responsibilities</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Component</th><th>Tech</th><th>Owner</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Wizard UI</strong></td><td>Next.js 14, Tailwind, shadcn/ui</td><td><span class="owner-pill fe">FE</span></td><td>4-step flow with progress indicator; lives at <code>app/(wizard)/</code></td></tr>
+        <tr><td><strong>Session Store</strong></td><td>Zustand</td><td><span class="owner-pill fe">FE</span></td><td>Holds <code>sessionId</code>, <code>blueprint</code>, <code>paper</code> across page navigations</td></tr>
+        <tr><td><strong>HTTP Routes</strong></td><td>FastAPI</td><td><span class="owner-pill fs1">FS1</span></td><td>Thin route layer; calls AI module + DB layer + Storage adapter</td></tr>
+        <tr><td><strong>AI Module</strong></td><td><code>google-genai</code></td><td><span class="owner-pill ai">AI</span></td><td>3 prompts: extract blueprint, generate paper, regenerate question</td></tr>
+        <tr><td><strong>Storage Adapter</strong></td><td><code>supabase</code> Python client + Gemini Files API</td><td><span class="owner-pill fs2">FS2</span></td><td>PDF persistence to Supabase Storage; caches <code>gemini_file_uri</code> on upload</td></tr>
+        <tr><td><strong>DB Layer</strong></td><td>SQLModel + psycopg</td><td><span class="owner-pill fs2">FS2</span></td><td>Session / SourceFile / Paper rows; pointed at Supabase Postgres</td></tr>
+        <tr><td><strong>Print Template</strong></td><td>Jinja2 + Print CSS (A4)</td><td><span class="owner-pill fs2">FS2</span></td><td>Renders <code>paper_json</code> to a print-ready HTML page</td></tr>
+        <tr><td><strong>Supabase</strong></td><td>Managed Postgres + Storage</td><td>External</td><td>Single shared project; service key in <code>.env</code></td></tr>
+        <tr><td><strong>Google Gemini</strong></td><td>External API</td><td>External</td><td>Files API for PDF inputs; <code>generate_content</code> with <code>response_schema</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.2 Repository Layout</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Path</th><th>Owner</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>ShipHappens/front/</code></td><td><span class="owner-pill fe">FE</span></td><td>Next.js app (App Router, TypeScript, Tailwind, shadcn/ui)</td></tr>
+        <tr><td><code>front/app/(wizard)/upload/page.tsx</code></td><td><span class="owner-pill fe">FE</span></td><td>Step 1 — drag-drop uploader</td></tr>
+        <tr><td><code>front/app/(wizard)/blueprint/page.tsx</code></td><td><span class="owner-pill fe">FE</span></td><td>Step 2 — read-only blueprint review</td></tr>
+        <tr><td><code>front/app/(wizard)/paper/page.tsx</code></td><td><span class="owner-pill fe">FE</span></td><td>Step 3 — editable paper + per-question regenerate</td></tr>
+        <tr><td><code>front/app/(wizard)/export/page.tsx</code></td><td><span class="owner-pill fe">FE</span></td><td>Step 4 — print preview iframe</td></tr>
+        <tr><td><code>front/lib/store.ts</code></td><td><span class="owner-pill fe">FE</span></td><td>Zustand store</td></tr>
+        <tr><td><code>front/lib/api.ts</code></td><td><span class="owner-pill fe">FE</span></td><td>Typed wrapper around backend endpoints</td></tr>
+        <tr><td><code>ShipHappens/backend/main.py</code></td><td><span class="owner-pill fs1">FS1</span></td><td>FastAPI app, CORS, session cookie middleware, startup hooks</td></tr>
+        <tr><td><code>backend/routes/*.py</code></td><td><span class="owner-pill fs1">FS1</span></td><td>Endpoint modules (sessions, upload, blueprint, generate, paper, export)</td></tr>
+        <tr><td><code>backend/ai/blueprint.py</code></td><td><span class="owner-pill ai">AI</span></td><td>Blueprint extraction prompt + Pydantic schema</td></tr>
+        <tr><td><code>backend/ai/generate.py</code></td><td><span class="owner-pill ai">AI</span></td><td>Paper generation prompt + Pydantic schema</td></tr>
+        <tr><td><code>backend/ai/regenerate.py</code></td><td><span class="owner-pill ai">AI</span></td><td>Single-question regeneration prompt + Pydantic schema</td></tr>
+        <tr><td><code>backend/db/models.py</code></td><td><span class="owner-pill fs2">FS2</span></td><td>SQLModel tables</td></tr>
+        <tr><td><code>backend/storage.py</code></td><td><span class="owner-pill fs2">FS2</span></td><td>Supabase Storage + Gemini Files API adapter</td></tr>
+        <tr><td><code>backend/templates/paper.html.j2</code></td><td><span class="owner-pill fs2">FS2</span></td><td>Print-ready paper template</td></tr>
+        <tr><td><code>backend/.env</code></td><td>All</td><td><code>SUPABASE_URL</code>, <code>SUPABASE_SERVICE_KEY</code>, <code>SUPABASE_DB_URL</code>, <code>GOOGLE_API_KEY</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="sequences">
+  <h2>3. Sequence Diagrams</h2>
+  <p class="section-lead">Four flows define the MVP: upload + blueprint extraction, paper generation, per-question regeneration, and export. Inline editing is a simple PUT with debounced autosave and is not diagrammed.</p>
+
+  <h3>3.1 Upload &amp; Blueprint Extraction</h3>
+  <div class="diagram-container">
+    <div class="diagram-title">Sequence — Upload + Blueprint</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant T as Teacher
+    participant FE as Next.js Frontend
+    participant BE as FastAPI Backend
+    participant SB as Supabase (DB + Storage)
+    participant G as Gemini API
+
+    T->>FE: Drag-drop 3-5 PDFs, click "Analyze"
+    FE->>BE: POST /sessions
+    BE->>SB: INSERT session row
+    SB-->>BE: session_id
+    BE-->>FE: 201 Created + Set-Cookie sid
+
+    loop For each PDF
+        FE->>BE: POST /sessions/:id/upload (multipart)
+        BE->>SB: Storage.upload uploads/:sid/:fid.pdf
+        BE->>G: files.upload(pdf bytes)
+        G-->>BE: gemini_file_uri
+        BE->>SB: INSERT source_file (uri cached)
+        BE-->>FE: { source_files }
+    end
+
+    FE->>BE: POST /sessions/:id/blueprint
+    BE->>SB: SELECT source_files WHERE session_id
+    BE->>G: generate_content(prompt, file_uris, schema=BlueprintSchema)
+    Note over BE,G: Model: gemini-2.5-flash
+    G-->>BE: blueprint_json
+    BE->>SB: UPSERT paper.blueprint_json
+    BE-->>FE: 200 + blueprint_json
+    FE-->>T: Route to Blueprint Review page
+    </div>
+  </div>
+
+  <h3>3.2 Paper Generation</h3>
+  <div class="diagram-container">
+    <div class="diagram-title">Sequence — Generate</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant T as Teacher
+    participant FE as Frontend
+    participant BE as Backend
+    participant SB as Supabase
+    participant G as Gemini
+
+    T->>FE: Click "Generate New Paper"
+    FE->>BE: POST /sessions/:id/generate
+    BE->>SB: SELECT blueprint + source_files
+    SB-->>BE: blueprint_json + cached file_uris
+    BE->>G: generate_content(prompt, blueprint+files, schema=PaperSchema)
+    Note over BE,G: Model: gemini-2.5-pro (quality)
+    G-->>BE: paper_json
+    BE->>SB: UPDATE paper.paper_json
+    BE-->>FE: 200 + paper_json
+    FE-->>T: Route to Editable Paper page
+    </div>
+  </div>
+
+  <h3>3.3 Per-Question Regeneration</h3>
+  <div class="diagram-container">
+    <div class="diagram-title">Sequence — Regenerate Single Question</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant T as Teacher
+    participant FE as Frontend
+    participant BE as Backend
+    participant SB as Supabase
+    participant G as Gemini
+
+    T->>FE: Click "Regenerate" on q3 (optional: nudge text)
+    FE->>BE: POST /sessions/:id/questions/q3/regenerate { nudge }
+    BE->>SB: SELECT paper + blueprint
+    BE->>G: generate_content(prompt, paper+blueprint+target+nudge, schema=QuestionSchema)
+    Note over BE,G: Model: gemini-2.5-flash (speed)
+    G-->>BE: question_json
+    BE->>BE: splice replacement into paper_json at q3
+    BE->>SB: UPDATE paper.paper_json
+    BE-->>FE: 200 + question_json
+    FE->>FE: Replace q3 card with new content
+    </div>
+  </div>
+
+  <h3>3.4 Export</h3>
+  <div class="diagram-container">
+    <div class="diagram-title">Sequence — Export to PDF</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant T as Teacher
+    participant FE as Frontend
+    participant BE as Backend
+    participant SB as Supabase
+
+    T->>FE: Click "Download PDF"
+    FE->>FE: Set iframe src=/api/proxy/export.html
+    FE->>BE: GET /sessions/:id/paper/export.html
+    BE->>SB: SELECT paper_json
+    BE->>BE: Render Jinja2 template + print CSS
+    BE-->>FE: 200 text/html
+    FE->>FE: iframe.contentWindow.print()
+    FE-->>T: Browser print dialog → Save as PDF
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="data-models">
+  <h2>4. Data Models</h2>
+  <p class="section-lead">Three SQLModel tables persisted in Supabase Postgres. Two JSON shapes (<code>BlueprintSchema</code> and <code>PaperSchema</code>) are the contract between the AI module and the rest of the system — both AI engineer and frontend engineer should treat these as <strong>immutable during the sprint</strong>.</p>
+
+  <h3>4.1 SQLModel Tables (<code>backend/db/models.py</code>)</h3>
+<pre><code>class Session(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    title: str | None = None
+    board: str | None = None       # e.g. "Cambridge", "AQA", "Edexcel"
+    level: str | None = None       # e.g. "A Level", "AS Level"
+    subject: str | None = None     # e.g. "English Literature"
+
+class SourceFile(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    session_id: UUID = Field(foreign_key="session.id", index=True)
+    filename: str
+    storage_path: str              # uploads/{session_id}/{file_uuid}.pdf
+    gemini_file_uri: str | None    # cached Gemini Files API URI
+    uploaded_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Paper(SQLModel, table=True):
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    session_id: UUID = Field(foreign_key="session.id", unique=True, index=True)
+    blueprint_json: dict = Field(default={}, sa_column=Column(JSONB))
+    paper_json: dict = Field(default={}, sa_column=Column(JSONB))
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+</code></pre>
+
+  <h3>4.2 BlueprintSchema (AI output)</h3>
+<pre><code>{
+  "subject": "English Literature",
+  "board": "Cambridge",
+  "level": "A Level",
+  "duration_minutes": 180,
+  "total_marks": 100,
+  "tone_notes": "Formal academic register; passages drawn from 20th-century prose...",
+  "instructions_pattern": ["Answer all questions.", "Time: 3 hours.", "..."],
+  "sections": [
+    {
+      "id": "secA",
+      "title": "Section A — Drama",
+      "marks": 25,
+      "instructions": "Answer one question.",
+      "question_types": ["essay"],
+      "typical_prompt_style": "Compare and contrast..."
+    }
+  ]
+}</code></pre>
+
+  <h3>4.3 PaperSchema (AI output + user-editable)</h3>
+<pre><code>{
+  "title": "A-Level English Literature — Mock Paper",
+  "duration_minutes": 180,
+  "total_marks": 100,
+  "instructions": ["Answer all questions.", "Time: 3 hours."],
+  "sections": [
+    {
+      "id": "secA",
+      "title": "Section A — Drama",
+      "marks": 25,
+      "instructions": "Answer one question.",
+      "questions": [
+        {
+          "id": "q1",
+          "number": "1",
+          "marks": 25,
+          "type": "essay",
+          "prompt": "Discuss how Shakespeare presents...",
+          "sub_parts": [],
+          "context_passage": null
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+  <div class="callout">
+    <div class="callout-title">Contract Discipline</div>
+    <p>Every <code>question.id</code> is stable for the life of the paper. Regeneration replaces the <code>question</code> object's content but keeps its <code>id</code>. The frontend uses <code>id</code> as the React key. The backend uses <code>id</code> to locate-and-splice in <code>regenerate</code>.</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="api-contracts">
+  <h2>5. API Contracts</h2>
+  <p class="section-lead">All endpoints are <code>application/json</code> unless otherwise noted. <code>:id</code> is the session UUID; the <code>sid</code> cookie carries it automatically so the FE doesn't have to thread it through every call (but the path param is the source of truth).</p>
+
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Owner</th><th>Request</th><th>Response</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="method-badge method-post">POST</span></td>
+          <td><code>/sessions</code></td>
+          <td><span class="owner-pill fs1">FS1</span></td>
+          <td><code>{ title?, board?, level?, subject? }</code></td>
+          <td><code>{ session_id }</code> + Set-Cookie</td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-post">POST</span></td>
+          <td><code>/sessions/:id/upload</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill fs2">FS2</span></td>
+          <td><code>multipart/form-data</code> with PDF files</td>
+          <td><code>{ source_files: SourceFile[] }</code></td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-post">POST</span></td>
+          <td><code>/sessions/:id/blueprint</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill ai">AI</span></td>
+          <td>—</td>
+          <td><code>{ blueprint: BlueprintSchema }</code></td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-post">POST</span></td>
+          <td><code>/sessions/:id/generate</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill ai">AI</span></td>
+          <td>—</td>
+          <td><code>{ paper: PaperSchema }</code></td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-put">PUT</span></td>
+          <td><code>/sessions/:id/paper</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill fs2">FS2</span></td>
+          <td><code>{ paper: PaperSchema }</code></td>
+          <td><code>{ saved_at }</code></td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-post">POST</span></td>
+          <td><code>/sessions/:id/questions/:qid/regenerate</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill ai">AI</span></td>
+          <td><code>{ nudge?: string }</code></td>
+          <td><code>{ question: Question }</code></td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-get">GET</span></td>
+          <td><code>/sessions/:id/paper/export.html</code></td>
+          <td><span class="owner-pill fs1">FS1</span> + <span class="owner-pill fs2">FS2</span></td>
+          <td>—</td>
+          <td><code>text/html</code> · print-ready</td>
+        </tr>
+        <tr>
+          <td><span class="method-badge method-get">GET</span></td>
+          <td><code>/sessions/:id</code></td>
+          <td><span class="owner-pill fs1">FS1</span></td>
+          <td>—</td>
+          <td><code>{ session, blueprint?, paper? }</code> · for resume</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>5.1 Standard Failure Modes</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Symptom</th><th>Cause</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Gemini returns invalid JSON</td><td>Schema drift / model creativity</td><td>Retry once with stricter system prompt; surface raw text in logs; show toast</td></tr>
+        <tr><td>Gemini Files API rate limit</td><td>Too many uploads in a session</td><td>Cap at 5 files; reuse cached <code>gemini_file_uri</code>; sequential not parallel uploads</td></tr>
+        <tr><td>Generate call timeout (&gt; 60s)</td><td>Large PDFs / slow inference</td><td>Frontend shows step indicator; backend has 120s timeout; retry once on 504</td></tr>
+        <tr><td>Supabase connection refused</td><td>Wrong service key / paused project</td><td>Health check route <code>/healthz</code> on startup; clear error in UI</td></tr>
+        <tr><td>Empty paper / missing sections</td><td>Blueprint extracted poorly</td><td>Allow user to re-run blueprint from Blueprint Review page</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="ui-mapping">
+  <h2>6. UI Component Mapping</h2>
+  <p class="section-lead">Four wizard pages plus a shared layout. All pages route under <code>app/(wizard)/</code> in the Next.js App Router and share a sticky 4-step progress indicator.</p>
+
+  <div class="ui-mapping">
+    <div class="ui-mapping-header">Step 1 — Upload (<code>/upload</code>)</div>
+    <ul class="ui-mapping-list">
+      <li><strong>Purpose:</strong> Collect 3–5 reference PDFs and optional metadata (title/board/level/subject)</li>
+      <li><strong>Components:</strong> <code>react-dropzone</code>, shadcn <code>Input</code> for metadata, file list with remove buttons, primary <code>Button</code> "Analyze"</li>
+      <li><strong>API calls (in order):</strong> <code>POST /sessions</code>, then <code>POST /sessions/:id/upload</code> (per file), then <code>POST /sessions/:id/blueprint</code></li>
+      <li><strong>State writes:</strong> <code>sessionId</code>, <code>sourceFiles</code>, <code>blueprint</code></li>
+      <li><strong>Next:</strong> Route to <code>/blueprint</code> on 200</li>
+    </ul>
+  </div>
+
+  <div class="ui-mapping">
+    <div class="ui-mapping-header">Step 2 — Blueprint Review (<code>/blueprint</code>)</div>
+    <ul class="ui-mapping-list">
+      <li><strong>Purpose:</strong> Show what Gemini extracted so the teacher can sanity-check before generating</li>
+      <li><strong>Components:</strong> shadcn <code>Accordion</code> (one per section), <code>Badge</code> for marks, read-only fields, primary <code>Button</code> "Generate New Paper", secondary <code>Button</code> "Re-analyze"</li>
+      <li><strong>API calls:</strong> <code>POST /sessions/:id/generate</code></li>
+      <li><strong>State reads:</strong> <code>blueprint</code></li>
+      <li><strong>State writes:</strong> <code>paper</code></li>
+      <li><strong>Next:</strong> Route to <code>/paper</code> on 200</li>
+    </ul>
+  </div>
+
+  <div class="ui-mapping">
+    <div class="ui-mapping-header">Step 3 — Editable Paper (<code>/paper</code>)</div>
+    <ul class="ui-mapping-list">
+      <li><strong>Purpose:</strong> Per-question editing and regeneration; this is the heart of the product</li>
+      <li><strong>Components:</strong> shadcn <code>Card</code> per section, sub-<code>Card</code> per question with <code>Textarea</code> (auto-grow), marks <code>Input</code>, <code>Button</code> "Regenerate" (with optional <code>Input</code> for nudge), <code>Skeleton</code> during regen</li>
+      <li><strong>API calls:</strong> Debounced <code>PUT /sessions/:id/paper</code> (800ms), <code>POST /sessions/:id/questions/:qid/regenerate</code> on demand</li>
+      <li><strong>State reads:</strong> <code>paper</code></li>
+      <li><strong>State writes:</strong> <code>paper</code> (optimistic), <code>lastSavedAt</code></li>
+      <li><strong>Next:</strong> Primary <code>Button</code> "Preview &amp; Export" → <code>/export</code></li>
+    </ul>
+  </div>
+
+  <div class="ui-mapping">
+    <div class="ui-mapping-header">Step 4 — Export (<code>/export</code>)</div>
+    <ul class="ui-mapping-list">
+      <li><strong>Purpose:</strong> Show the print preview and let the user save as PDF via browser print</li>
+      <li><strong>Components:</strong> <code>iframe</code> at full width pointing to <code>/api/proxy/export.html</code> (Next.js API route that proxies to FastAPI), primary <code>Button</code> "Download PDF" calls <code>iframe.contentWindow.print()</code>, secondary <code>Button</code> "Back to Edit"</li>
+      <li><strong>API calls:</strong> <code>GET /sessions/:id/paper/export.html</code> (via the proxy)</li>
+      <li><strong>State reads:</strong> <code>sessionId</code></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="team">
+  <h2>7. Team Task Lanes</h2>
+  <p class="section-lead">Each developer owns one vertical lane. Hour ranges are cumulative from kickoff (h0). Definition-of-done is checked at the corresponding milestone in <a href="#timeline">Section 8</a>.</p>
+
+  <!-- AI ENGINEER -->
+  <div class="owner-card ai">
+    <div class="owner-head">
+      <h3>AI Engineer</h3>
+      <span class="role">Owns <code>backend/ai/</code> · 3 prompts · Pydantic schemas</span>
+    </div>
+    <div class="owner-body">
+      <div class="task"><span class="hours">h0–h2</span> <strong>SDK spike.</strong> Write a 30-line standalone script that uploads one sample PDF via <code>genai.Client.files.upload()</code>, calls <code>generate_content</code> with a Pydantic <code>response_schema</code>, prints the JSON. Commit to <code>backend/ai/spike.py</code>. Lock the SDK pattern the rest of the team will copy.</div>
+      <div class="task"><span class="hours">h2–h8</span> <strong>Blueprint extraction.</strong> Implement <code>extract_blueprint(file_uris: list[str]) -&gt; Blueprint</code> in <code>backend/ai/blueprint.py</code>. Define <code>BlueprintSchema</code> matching Section 4.2. Use <code>gemini-2.5-flash</code>. Test against two real PDF sets.</div>
+      <div class="task"><span class="hours">h8–h13</span> <strong>Paper generation.</strong> Implement <code>generate_paper(blueprint, file_uris) -&gt; Paper</code> in <code>backend/ai/generate.py</code>. <code>PaperSchema</code> per Section 4.3. Use <code>gemini-2.5-pro</code>. Hard requirement: deterministic JSON, every <code>question.id</code> unique and stable.</div>
+      <div class="task"><span class="hours">h13–h16</span> <strong>Per-question regeneration.</strong> Implement <code>regenerate_question(paper, blueprint, question_id, nudge?) -&gt; Question</code> in <code>backend/ai/regenerate.py</code>. Use <code>gemini-2.5-flash</code>. Return only the replacement question object.</div>
+      <div class="task"><span class="hours">h16–h20</span> <strong>Prompt polish + safety.</strong> Iterate on observed output (mark consistency, instruction style, no off-topic content). Add a retry-with-parse-failure wrapper. Help debug demo-day issues.</div>
+      <div class="dod"><strong>Definition of done:</strong> Each Pydantic schema imports cleanly, each function returns a valid model from a real PDF set, retry-on-parse-failure wrapper logs raw output when it kicks in.</div>
+    </div>
+  </div>
+
+  <!-- FS1 -->
+  <div class="owner-card fs1">
+    <div class="owner-head">
+      <h3>Full-Stack Engineer 1 — Backend Lead</h3>
+      <span class="role">Owns FastAPI app + all HTTP routes</span>
+    </div>
+    <div class="owner-body">
+      <div class="task"><span class="hours">h0–h2</span> <strong>App scaffolding.</strong> Wire FastAPI in <code>backend/main.py</code>. Add <code>pydantic-settings</code> loading <code>.env</code> (<code>SUPABASE_URL</code>, <code>SUPABASE_SERVICE_KEY</code>, <code>SUPABASE_DB_URL</code>, <code>GOOGLE_API_KEY</code>). Add CORS for <code>http://localhost:3000</code>. Add session cookie middleware (read/set <code>sid</code>, attach <code>session_id</code> to request state). Remove <code>pgvector</code> and <code>alembic</code> from <code>pyproject.toml</code>; add <code>supabase</code>.</div>
+      <div class="task"><span class="hours">h2–h8</span> <strong>Session, upload, blueprint endpoints.</strong> Implement <code>POST /sessions</code>, <code>POST /sessions/:id/upload</code>, <code>POST /sessions/:id/blueprint</code>. The upload endpoint delegates file persistence to FS2's storage adapter and Gemini Files cache. Blueprint endpoint calls AI's <code>extract_blueprint</code>.</div>
+      <div class="task"><span class="hours">h8–h14</span> <strong>Generate + edit endpoints.</strong> <code>POST /sessions/:id/generate</code>, <code>PUT /sessions/:id/paper</code>, <code>POST /sessions/:id/questions/:qid/regenerate</code>. PUT validates incoming JSON against <code>PaperSchema</code> (use FS2's validator). Regenerate splices the new question into the stored paper by <code>question_id</code>.</div>
+      <div class="task"><span class="hours">h14–h18</span> <strong>Export endpoint.</strong> <code>GET /sessions/:id/paper/export.html</code> loads <code>paper_json</code> and renders FS2's Jinja2 template. Pair with FS2 on the print CSS.</div>
+      <div class="task"><span class="hours">h18–h20</span> <strong>Bug bash + error handling.</strong> Structured error responses, request logging middleware, health check at <code>/healthz</code>, demo polish.</div>
+      <div class="dod"><strong>Definition of done:</strong> OpenAPI docs at <code>/docs</code> show every endpoint with correct schemas, manual <code>curl</code> works for each, FE can call all endpoints without CORS issues.</div>
+    </div>
+  </div>
+
+  <!-- FS2 -->
+  <div class="owner-card fs2">
+    <div class="owner-head">
+      <h3>Full-Stack Engineer 2 — Data Lead</h3>
+      <span class="role">Owns Supabase, models, storage adapter, Jinja template</span>
+    </div>
+    <div class="owner-body">
+      <div class="task"><span class="hours">h0–h2</span> <strong>Supabase + models.</strong> Create the team Supabase project (free tier). Create a private storage bucket <code>uploads</code>. Share the URL + service key + DB connection string with the team in a pinned Slack message. Define SQLModel models (<code>Session</code>, <code>SourceFile</code>, <code>Paper</code>) in <code>backend/db/models.py</code>. Wire <code>create_engine(SUPABASE_DB_URL)</code> and <code>SQLModel.metadata.create_all()</code> on startup. Check in <code>.env.example</code>.</div>
+      <div class="task"><span class="hours">h2–h8</span> <strong>Supabase Storage + Gemini Files cache.</strong> Build <code>backend/storage.py</code>: <code>upload_pdf(session_id, file) -&gt; SourceFile</code> writes to Supabase Storage at <code>uploads/{session_id}/{file_uuid}.pdf</code> and creates a <code>SourceFile</code> row. Wrap Gemini Files API: push bytes to Gemini once, cache <code>gemini_file_uri</code> on the row. Idempotent — if the row already has a URI, reuse it.</div>
+      <div class="task"><span class="hours">h8–h14</span> <strong>Validation + splice helpers.</strong> Pydantic validator for incoming <code>paper_json</code> (server trusts nothing from FE). Helper <code>splice_question(paper_json, question_id, new_question)</code> that preserves section + question ordering. FS1 uses both in the PUT and regenerate endpoints.</div>
+      <div class="task"><span class="hours">h14–h18</span> <strong>Jinja paper template.</strong> Build <code>backend/templates/paper.html.j2</code>: cover page (title, duration, total marks, instructions), section headings with marks, questions with marks in the right margin, sub-parts numbered <code>(a)(b)(c)</code>, optional context-passage in a bordered box, serif font, A4 print CSS, <code>page-break-inside: avoid</code> on each question card.</div>
+      <div class="task"><span class="hours">h18–h20</span> <strong>Seed data + smoke tests.</strong> <code>backend/seed.py</code> creates a session with a pre-generated paper so the demo can fall back if live calls fail. A smoke-test script that hits every endpoint and asserts 200.</div>
+      <div class="dod"><strong>Definition of done:</strong> Every laptop connects to Supabase via the shared env vars, models match Section 4, the Jinja template prints cleanly to A4 PDF from the browser.</div>
+    </div>
+  </div>
+
+  <!-- FE -->
+  <div class="owner-card fe">
+    <div class="owner-head">
+      <h3>Frontend Engineer</h3>
+      <span class="role">Owns <code>ShipHappens/front/</code> · 4 wizard pages</span>
+    </div>
+    <div class="owner-body">
+      <div class="task"><span class="hours">h0–h2</span> <strong>Scaffolding.</strong> <code>npx create-next-app@latest</code> with TS + Tailwind + App Router into <code>ShipHappens/front/</code>. Run <code>shadcn-ui init</code>. Install <code>react-dropzone</code>, <code>zustand</code>, <code>swr</code>. Create wizard layout at <code>app/(wizard)/layout.tsx</code> with a 4-step progress indicator. Create empty pages <code>upload</code>, <code>blueprint</code>, <code>paper</code>, <code>export</code>. Zustand store at <code>lib/store.ts</code>. Typed API wrapper at <code>lib/api.ts</code>.</div>
+      <div class="task"><span class="hours">h2–h8</span> <strong>Upload + Blueprint pages.</strong> Upload: <code>react-dropzone</code> accepting 3–5 PDFs, file list with remove, metadata inputs, "Analyze" CTA that runs the 3-step API chain. Blueprint: shadcn <code>Accordion</code> rendering blueprint JSON read-only, "Generate" CTA.</div>
+      <div class="task"><span class="hours">h8–h14</span> <strong>Editable Paper page.</strong> Section cards with question sub-cards. Each question: auto-grow <code>Textarea</code>, marks <code>Input</code>, "Regenerate" icon button (opens optional nudge input). Debounced 800ms autosave PUTting full paper. Per-question regen shows <code>Skeleton</code> over the card, then replaces content from the response.</div>
+      <div class="task"><span class="hours">h14–h18</span> <strong>Export page.</strong> Iframe at <code>/api/proxy/export.html</code> (Next.js API route forwards to backend). "Download PDF" button triggers <code>iframe.contentWindow.print()</code>.</div>
+      <div class="task"><span class="hours">h18–h20</span> <strong>Polish.</strong> Loading states on every button, toast on error, empty states, "Start over" reset, demo-script dry run.</div>
+      <div class="dod"><strong>Definition of done:</strong> All 4 wizard steps navigate without page refresh, state survives navigation, FE compiles with zero TS errors, demo runs end-to-end on one machine.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="timeline">
+  <h2>8. 20-Hour Timeline</h2>
+  <p class="section-lead">Hours run left-to-right from kickoff (h0) to demo (h20). Milestones at h8, h14, and h18 are no-slip checkpoints: if a milestone slips, invoke a scope cut from Section 10 immediately rather than absorbing the slip downstream.</p>
+
+  <div class="diagram-container">
+    <div class="diagram-title">Sprint Gantt (Mermaid)</div>
+    <div class="mermaid">
+gantt
+    title 20-Hour Sprint
+    dateFormat HH
+    axisFormat %H
+    section AI Engineer
+    SDK Spike            :a1, 00, 2h
+    Blueprint Prompt     :a2, after a1, 6h
+    Generate Prompt      :a3, after a2, 5h
+    Regenerate Prompt    :a4, after a3, 3h
+    Polish + Support     :a5, after a4, 4h
+    section FS1 Backend
+    App Scaffold         :b1, 00, 2h
+    Upload+BP Endpoints  :b2, after b1, 6h
+    Gen+Edit Endpoints   :b3, after b2, 6h
+    Export Endpoint      :b4, after b3, 4h
+    Bug Bash             :b5, after b4, 2h
+    section FS2 Data
+    Supabase + Models    :c1, 00, 2h
+    Storage + Files Cache:c2, after c1, 6h
+    Validation + Splice  :c3, after c2, 6h
+    Jinja Template       :c4, after c3, 4h
+    Seed + Smoke         :c5, after c4, 2h
+    section Frontend
+    Next.js Scaffold     :d1, 00, 2h
+    Upload + Blueprint UI:d2, after d1, 6h
+    Editable Paper UI    :d3, after d2, 6h
+    Export Preview       :d4, after d3, 4h
+    Polish               :d5, after d4, 2h
+    </div>
+  </div>
+
+  <h3>8.1 Milestones (no-slip)</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Hour</th><th>Milestone</th><th>Demo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>h8</strong></td><td>Vertical slice 1 complete</td><td>Upload 3 PDFs → see extracted Blueprint on screen</td></tr>
+        <tr><td><strong>h14</strong></td><td>Vertical slice 2 complete</td><td>Click Generate → edit any question → click Regenerate → see new content</td></tr>
+        <tr><td><strong>h18</strong></td><td>Vertical slice 3 complete</td><td>Click Download PDF → browser shows print preview of formatted paper</td></tr>
+        <tr><td><strong>h20</strong></td><td>Demo-ready</td><td>End-to-end run plus recorded backup video</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.2 Cross-dev Dependencies</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Blocker</th><th>Blocked task</th><th>Workaround if late</th></tr></thead>
+      <tbody>
+        <tr><td><span class="owner-pill fs2">FS2</span> Supabase setup (h2)</td><td><span class="owner-pill fs1">FS1</span> session endpoint, <span class="owner-pill ai">AI</span> spike</td><td>FS2 commits service key to shared Slack within first 30 minutes</td></tr>
+        <tr><td><span class="owner-pill ai">AI</span> BlueprintSchema (h8)</td><td><span class="owner-pill fe">FE</span> Blueprint page</td><td>FE works from Section 4.2 sample JSON; swaps in real schema on h8</td></tr>
+        <tr><td><span class="owner-pill ai">AI</span> PaperSchema (h13)</td><td><span class="owner-pill fe">FE</span> Editable Paper page</td><td>FE works from Section 4.3 sample JSON; mock data in Zustand for dev</td></tr>
+        <tr><td><span class="owner-pill fs2">FS2</span> Jinja template (h18)</td><td><span class="owner-pill fe">FE</span> Export page</td><td>FE uses a placeholder <code>&lt;pre&gt;</code> dump for paper_json; swaps to iframe on h18</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="config">
+  <h2>9. Configuration &amp; Environment</h2>
+  <p class="section-lead">Configuration is loaded from <code>backend/.env</code> via <code>pydantic-settings</code>. The frontend has its own <code>front/.env.local</code> for the backend URL.</p>
+
+  <h3>9.1 Backend Environment Variables</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>GOOGLE_API_KEY</code></td><td class="required">Yes</td><td>—</td><td>Gemini API key (also used for Files API)</td></tr>
+        <tr><td><code>SUPABASE_URL</code></td><td class="required">Yes</td><td>—</td><td>Project URL, e.g. <code>https://xxx.supabase.co</code></td></tr>
+        <tr><td><code>SUPABASE_SERVICE_KEY</code></td><td class="required">Yes</td><td>—</td><td>Service role key (never expose to FE)</td></tr>
+        <tr><td><code>SUPABASE_DB_URL</code></td><td class="required">Yes</td><td>—</td><td>Direct Postgres connection string from Supabase dashboard</td></tr>
+        <tr><td><code>SUPABASE_BUCKET</code></td><td class="optional">Optional</td><td><code>uploads</code></td><td>Storage bucket name</td></tr>
+        <tr><td><code>GEMINI_GENERATION_MODEL</code></td><td class="optional">Optional</td><td><code>gemini-2.5-pro</code></td><td>Used for the paper generation call</td></tr>
+        <tr><td><code>GEMINI_FAST_MODEL</code></td><td class="optional">Optional</td><td><code>gemini-2.5-flash</code></td><td>Used for blueprint + regeneration</td></tr>
+        <tr><td><code>CORS_ORIGIN</code></td><td class="optional">Optional</td><td><code>http://localhost:3000</code></td><td>Comma-separated origins</td></tr>
+        <tr><td><code>SESSION_COOKIE_NAME</code></td><td class="optional">Optional</td><td><code>sid</code></td><td>Cookie carrying the session UUID</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>9.2 Frontend Environment Variables</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>NEXT_PUBLIC_API_BASE_URL</code></td><td class="required">Yes</td><td><code>http://localhost:8000</code></td><td>Backend base URL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>9.3 Running the System</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Process</th><th>Command</th><th>Default Port</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Backend dev</strong></td><td><code>cd backend && uv run uvicorn main:app --reload</code></td><td>8000</td></tr>
+        <tr><td><strong>Frontend dev</strong></td><td><code>cd front && npm run dev</code></td><td>3000</td></tr>
+        <tr><td><strong>Install BE deps</strong></td><td><code>cd backend && uv sync</code></td><td>—</td></tr>
+        <tr><td><strong>Install FE deps</strong></td><td><code>cd front && npm install</code></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>9.4 Minimum Dependencies</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Package</th><th>Side</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>fastapi</code> + <code>uvicorn[standard]</code></td><td>BE</td><td>HTTP server</td></tr>
+        <tr><td><code>sqlmodel</code> + <code>psycopg[binary]</code></td><td>BE</td><td>Postgres ORM + driver</td></tr>
+        <tr><td><code>supabase</code></td><td>BE</td><td>Storage uploads + bucket management</td></tr>
+        <tr><td><code>google-genai</code></td><td>BE</td><td>Gemini SDK (generation + Files API)</td></tr>
+        <tr><td><code>pydantic-settings</code></td><td>BE</td><td>Typed env config</td></tr>
+        <tr><td><code>python-multipart</code></td><td>BE</td><td>Multipart upload parsing</td></tr>
+        <tr><td><code>jinja2</code></td><td>BE</td><td>Print template rendering</td></tr>
+        <tr><td><code>next</code>, <code>react</code>, <code>typescript</code></td><td>FE</td><td>Framework</td></tr>
+        <tr><td><code>tailwindcss</code>, <code>shadcn-ui</code></td><td>FE</td><td>Styling + components</td></tr>
+        <tr><td><code>zustand</code>, <code>swr</code></td><td>FE</td><td>State + fetch caching</td></tr>
+        <tr><td><code>react-dropzone</code></td><td>FE</td><td>Drag-drop uploader</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Removed from existing <code>pyproject.toml</code></div>
+    <p><code>pgvector</code> (no embeddings) and <code>alembic</code> (use <code>SQLModel.metadata.create_all()</code> for the MVP). <code>pymupdf</code> stays as a fallback for PDF metadata only; it is not on the critical path.</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="risks">
+  <h2>10. Risks &amp; Scope Cuts</h2>
+
+  <h3>10.1 Top Risks &amp; Mitigations</h3>
+  <div class="table-wrap data-table">
+    <table>
+      <thead><tr><th>Risk</th><th>Likelihood</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Gemini structured output drifts from schema</td><td>Medium</td><td>Pydantic <code>response_schema</code>; retry once; log raw output; AI engineer monitors from h0</td></tr>
+        <tr><td>Generate call takes 30–60s, FE looks frozen</td><td>High</td><td>Frontend step indicator with "this can take a minute" message; backend timeout 120s; no polling needed</td></tr>
+        <tr><td>Gemini Files API quota / errors on big PDFs</td><td>Medium</td><td>Cap at 5 files; cache <code>gemini_file_uri</code> per row; sequential uploads</td></tr>
+        <tr><td>Supabase credentials misconfigured on someone's laptop</td><td>High</td><td>Single shared <code>.env.example</code>; <code>/healthz</code> endpoint that checks DB + Storage; h1 of phase 0 is "everyone connects"</td></tr>
+        <tr><td>Junior FE rebuilds rich text editor from scratch</td><td>Medium</td><td>Hard rule: shadcn <code>Textarea</code> with auto-grow. No tiptap, no Slate, no contenteditable polish</td></tr>
+        <tr><td>Per-question regenerate has tricky splice bug</td><td>Medium</td><td>FS2's splice helper is a single pure function with unit tests; both AI and FS1 import it</td></tr>
+        <tr><td>Demo machine fails live</td><td>Low</td><td>FS2 records a backup video at h18; <code>seed.py</code> provides offline data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>10.2 Scope Cuts (in priority order if we slip)</h3>
+  <ol style="margin-left: 20px; color: var(--ink-muted);">
+    <li>Drop per-section regenerate (keep per-question only).</li>
+    <li>Drop Blueprint Review step — go Upload → generated Paper directly; show the blueprint collapsed above the paper.</li>
+    <li>Drop autosave on edit (require explicit "Save" button).</li>
+    <li>Drop per-question regenerate (text edits only).</li>
+    <li>Drop styling on PDF export (plain HTML print is acceptable for demo).</li>
+    <li>Drop the optional "nudge" input on regenerate (just regenerate without it).</li>
+  </ol>
+</section>
+
+<!-- ============================================ -->
+<section id="terms">
+  <h2>11. Glossary</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Blueprint</strong></td><td>The structural fingerprint of a teacher's past papers — sections, marks distribution, question types, instructions style, tone. Output of the first Gemini call.</td></tr>
+        <tr><td><strong>Session UUID</strong></td><td>Anonymous identifier for one "build a paper" workflow. Stored in the <code>sid</code> cookie and as the primary key of the <code>session</code> table.</td></tr>
+        <tr><td><strong>Gemini Files API</strong></td><td>Google's endpoint for uploading large binary inputs (PDFs) and referencing them by URI in subsequent <code>generate_content</code> calls. Uploads are cached per <code>SourceFile</code>.</td></tr>
+        <tr><td><strong>Structured Output</strong></td><td>Gemini feature where you pass a Pydantic schema as <code>response_schema</code> and the model is constrained to return JSON matching that schema.</td></tr>
+        <tr><td><strong>Supabase Storage</strong></td><td>Managed object storage (S3-compatible) provided by Supabase. We use a single private bucket <code>uploads</code>.</td></tr>
+        <tr><td><strong>Splice</strong></td><td>Replacing one question object inside <code>paper_json</code> by <code>question_id</code> while preserving section + ordering.</td></tr>
+        <tr><td><strong>Print CSS</strong></td><td>CSS <code>@media print</code> rules plus <code>@page</code> for A4 sizing; turns an HTML page into a paginated PDF when the browser prints to PDF.</td></tr>
+        <tr><td><strong>Nudge</strong></td><td>Optional free-text instruction passed to the regenerate prompt, e.g. "harder" or "more focused on theme of guilt".</td></tr>
+        <tr><td><strong>Vertical Slice</strong></td><td>An end-to-end working path through the system at a checkpoint hour (h8, h14, h18) — used to ensure demoability is preserved over local perfection.</td></tr>
+        <tr><td><strong>MVP</strong></td><td>Minimum Viable Product — this 20-hour build is scoped to four wizard steps, three Gemini calls, and one shared Supabase project.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>ShipHappens — Smart Paper Generator · Build Plan v0.1</strong></p>
+  <p class="disclaimer">Demo subject is A-Level English; architecture is subject-agnostic. Authentication, vector search, per-section regeneration, server-rendered PDF, and curriculum-aware difficulty calibration are deliberately out of scope for the 20-hour MVP and tracked for v0.2.</p>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    sequence: { actorMargin: 50, messageMargin: 40, boxMargin: 10, boxTextMargin: 5, noteMargin: 10, useMaxWidth: true },
+    gantt: { useMaxWidth: true, leftPadding: 120, barHeight: 22, barGap: 4, topPadding: 30 }
+  });
+</script>
+
+</body>
+</html>
