@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShipHappens — Sprint Backlog (PBIs)</title>
+  <style>
+    :root {
+      --ink: #1c2333;
+      --ink-muted: #5c6578;
+      --border: #dde1e8;
+      --surface: #f6f7f9;
+      --accent: #1e3a5f;
+      --accent-soft: #e8eef5;
+      --link: #1e4976;
+      --success: #2e7d32;
+      --success-bg: #e8f5e9;
+      --warning: #ed6c02;
+      --warning-bg: #fff4e5;
+      --owner-ai: #7b1fa2;
+      --owner-ai-bg: #f3e5f5;
+      --owner-fs1: #1565c0;
+      --owner-fs1-bg: #e3f2fd;
+      --owner-fs2: #00838f;
+      --owner-fs2-bg: #e0f7fa;
+      --owner-fe: #ef6c00;
+      --owner-fe-bg: #fff3e0;
+      --owner-team: #455a64;
+      --owner-team-bg: #eceff1;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.6; color: var(--ink); background: #fff; font-size: 15px; }
+    header { background: var(--accent); color: #fff; padding: 40px 28px 32px; text-align: center; border-bottom: 4px solid #0f2744; }
+    header .kicker { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+    header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 1.75rem; font-weight: 600; margin-bottom: 10px; line-height: 1.25; }
+    header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 720px; margin: 0 auto; }
+    header .meta { margin-top: 16px; font-size: 0.78rem; color: rgba(255,255,255,0.55); }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; max-width: 1100px; margin: 0 auto; }
+    nav a { color: var(--link); text-decoration: none; font-size: 0.82rem; font-weight: 500; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 1080px; margin: 0 auto; padding: 32px 24px 48px; }
+    section { margin-bottom: 44px; }
+    h2 { font-family: Georgia, serif; font-size: 1.35rem; color: var(--ink); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 600; }
+    h3 { font-size: 1.05rem; color: var(--ink); margin: 22px 0 10px; font-weight: 600; }
+    h4 { font-size: 0.9rem; color: var(--ink); margin: 12px 0 6px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
+    p { margin-bottom: 12px; color: var(--ink-muted); }
+    .section-lead { font-size: 0.92rem; max-width: 56em; margin-bottom: 14px; }
+    code { background: #f0f2f5; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; font-family: 'Consolas', 'Monaco', monospace; }
+    .callout { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+    .callout-title { font-weight: 600; color: var(--accent); margin-bottom: 6px; font-size: 0.88rem; }
+    .callout p { margin-bottom: 0; font-size: 0.88rem; }
+    .callout-success { background: var(--success-bg); border-left-color: var(--success); }
+    .callout-success .callout-title { color: var(--success); }
+    .callout-warning { background: var(--warning-bg); border-left-color: var(--warning); }
+    .callout-warning .callout-title { color: var(--warning); }
+
+    .owner-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; }
+    .owner-pill.ai { background: var(--owner-ai-bg); color: var(--owner-ai); }
+    .owner-pill.fs1 { background: var(--owner-fs1-bg); color: var(--owner-fs1); }
+    .owner-pill.fs2 { background: var(--owner-fs2-bg); color: var(--owner-fs2); }
+    .owner-pill.fe { background: var(--owner-fe-bg); color: var(--owner-fe); }
+    .owner-pill.team { background: var(--owner-team-bg); color: var(--owner-team); }
+
+    .quick-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 14px 0; }
+    .quick-table th, .quick-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .quick-table th { background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .quick-table tr:hover { background: var(--surface); }
+    .quick-table .pbi-id-link { font-family: 'Consolas', monospace; font-weight: 700; color: var(--accent); text-decoration: none; }
+    .quick-table .pbi-id-link:hover { text-decoration: underline; }
+
+    .sprint-head { background: linear-gradient(135deg, var(--accent) 0%, #2e4f7c 100%); color: #fff; padding: 14px 20px; border-radius: 8px 8px 0 0; margin-top: 28px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .sprint-head h3 { color: #fff; margin: 0; font-family: Georgia, serif; font-size: 1.15rem; font-weight: 600; }
+    .sprint-head .sprint-meta { font-size: 0.78rem; opacity: 0.85; font-weight: 500; }
+    .sprint-body { border: 1px solid var(--border); border-top: none; padding: 14px 18px 6px; border-radius: 0 0 8px 8px; margin-bottom: 24px; background: #fafbfc; }
+    .milestone { background: #fffde7; border-left: 4px solid #f57f17; padding: 12px 16px; margin: 14px 0; border-radius: 0 6px 6px 0; font-size: 0.9rem; }
+    .milestone strong { color: #e65100; }
+
+    .pbi { background: #fff; border: 1px solid var(--border); border-radius: 6px; margin: 12px 0; overflow: hidden; }
+    .pbi.ai { border-left: 4px solid var(--owner-ai); }
+    .pbi.fs1 { border-left: 4px solid var(--owner-fs1); }
+    .pbi.fs2 { border-left: 4px solid var(--owner-fs2); }
+    .pbi.fe { border-left: 4px solid var(--owner-fe); }
+    .pbi.team { border-left: 4px solid var(--owner-team); }
+    .pbi-head { padding: 12px 16px 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .pbi-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .pbi-id { font-family: 'Consolas', monospace; font-weight: 700; font-size: 0.82rem; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: #fff; letter-spacing: 0.03em; }
+    .pbi-name { font-weight: 600; font-size: 1rem; color: var(--ink); }
+    .pbi-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.78rem; color: var(--ink-muted); }
+    .pbi-hours { font-family: 'Consolas', monospace; font-weight: 600; padding: 2px 8px; border-radius: 3px; background: #fff; border: 1px solid var(--border); color: var(--ink); }
+    .pbi-body { padding: 14px 18px 16px; }
+    .pbi-desc { font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 14px; }
+    .pbi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin-bottom: 14px; }
+    @media (max-width: 720px) { .pbi-grid { grid-template-columns: 1fr; } }
+    .pbi-block h4 { font-size: 0.72rem; color: var(--ink-muted); margin-top: 0; margin-bottom: 6px; }
+    .pbi-block ul { list-style: none; padding-left: 0; }
+    .pbi-block li { font-size: 0.85rem; color: var(--ink); padding: 3px 0; }
+    .pbi-block li code { font-size: 0.78em; }
+    .pbi-block .dep-pill { display: inline-block; font-family: 'Consolas', monospace; font-size: 0.74rem; font-weight: 700; padding: 2px 8px; margin: 2px 4px 2px 0; border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
+    .pbi-block .dep-pill.none { background: var(--success-bg); color: var(--success); }
+    .pbi-subtasks { background: var(--surface); padding: 12px 16px; border-radius: 6px; margin-top: 4px; }
+    .pbi-subtasks h4 { margin-top: 0; }
+    .pbi-subtasks ol { padding-left: 24px; }
+    .pbi-subtasks li { font-size: 0.88rem; color: var(--ink); padding: 4px 0; line-height: 1.5; }
+    .pbi-subtasks li code { font-size: 0.78em; }
+    .pbi-accept { background: var(--success-bg); border-left: 3px solid var(--success); padding: 10px 14px; margin-top: 12px; border-radius: 0 4px 4px 0; }
+    .pbi-accept h4 { color: var(--success); margin-top: 0; }
+    .pbi-accept ul { list-style: none; padding-left: 0; }
+    .pbi-accept li { font-size: 0.85rem; color: var(--ink); padding: 3px 0; }
+    .pbi-accept li::before { content: "\2713  "; color: var(--success); font-weight: 700; }
+
+    .engineer-section { border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
+    .engineer-section.ai { border-top: 3px solid var(--owner-ai); }
+    .engineer-section.fs1 { border-top: 3px solid var(--owner-fs1); }
+    .engineer-section.fs2 { border-top: 3px solid var(--owner-fs2); }
+    .engineer-section.fe { border-top: 3px solid var(--owner-fe); }
+    .engineer-section h3 { margin-top: 0; }
+    .engineer-section ol { padding-left: 22px; }
+    .engineer-section li { padding: 4px 0; font-size: 0.9rem; color: var(--ink); }
+    .engineer-section li a { color: var(--accent); text-decoration: none; font-family: 'Consolas', monospace; font-weight: 700; }
+    .engineer-section li a:hover { text-decoration: underline; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--ink-muted); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Sprint Backlog · 20-Hour MVP</p>
+  <h1>ShipHappens — Product Backlog Items</h1>
+  <p class="subtitle">Ordered, owned, and decomposed. Work top-to-bottom. Each PBI lists its dependencies — start a PBI only when its dependencies are done or unblocked by mock data.</p>
+  <p class="meta">24 PBIs · 4 sprints · 4 owners (AI · FS1 · FS2 · FE) · Companion to <code>build.html</code></p>
+</header>
+
+<nav aria-label="Section navigation">
+  <ul>
+    <li><a href="#how-to-read">How to read</a></li>
+    <li><a href="#quick">Quick view</a></li>
+    <li><a href="#sprint-0">Sprint 0</a></li>
+    <li><a href="#sprint-1">Sprint 1</a></li>
+    <li><a href="#sprint-2">Sprint 2</a></li>
+    <li><a href="#sprint-3">Sprint 3</a></li>
+    <li><a href="#sprint-4">Sprint 4</a></li>
+    <li><a href="#per-engineer">Per-engineer backlog</a></li>
+    <li><a href="#dod">Global DoD</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ============================================ -->
+<section id="how-to-read">
+  <h2>1. How to read this document</h2>
+  <p class="section-lead">Each PBI is one self-contained unit of work that should take a junior developer 1–6 hours. PBIs are numbered in <strong>execution order</strong>: the lowest-numbered PBI that is still <code>Ready</code> for your role is the next thing you should pick up.</p>
+
+  <div class="callout">
+    <div class="callout-title">PBI anatomy</div>
+    <p><strong>ID + Title:</strong> stable handle (e.g. <code>PBI-08</code>) you can paste in Slack / commits. <strong>Owner:</strong> the engineer responsible. <strong>Hours:</strong> budget + which hour-range of the sprint. <strong>Depends on:</strong> PBI IDs that must be complete OR mockable before you can finish this one. <strong>Files touched:</strong> the paths you'll create or modify. <strong>Subtasks:</strong> ordered checklist to work through. <strong>Acceptance:</strong> what makes this PBI "done" enough to ship.</p>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">Rules of engagement</div>
+    <p>1. Don't start a PBI before its dependencies, unless you can stub them with sample JSON from <code>backend/ai/samples/</code>. 2. When you start, post <code>PBI-XX started</code> in chat. When done, post <code>PBI-XX done</code>. 3. If you finish early, pull the next PBI for your role. 4. If you're blocked &gt; 30 minutes, escalate to the PM/tech-lead immediately.</p>
+  </div>
+
+  <h3>1.1 Owner legend</h3>
+  <p>
+    <span class="owner-pill ai">AI</span> &nbsp; AI Engineer — owns <code>backend/ai/</code> and the three Gemini prompts.<br>
+    <span class="owner-pill fs1">FS1</span> &nbsp; Full-Stack 1 (Backend Lead) — owns FastAPI app + all HTTP routes.<br>
+    <span class="owner-pill fs2">FS2</span> &nbsp; Full-Stack 2 (Data Lead) — owns Supabase, models, storage, Jinja template.<br>
+    <span class="owner-pill fe">FE</span> &nbsp; Frontend Engineer — owns Next.js app + wizard pages.<br>
+    <span class="owner-pill team">TEAM</span> &nbsp; All four — pair / demo prep work.
+  </p>
+</section>
+
+<!-- ============================================ -->
+<section id="quick">
+  <h2>2. Quick view — all PBIs in order</h2>
+  <p class="section-lead">Scan top-to-bottom for your owner pill. Click an ID to jump to the full PBI card.</p>
+
+  <table class="quick-table">
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Owner</th><th>Hours</th><th>Sprint</th><th>Depends on</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><a href="#pbi-01" class="pbi-id-link">PBI-01</a></td><td>Supabase Project + Storage Bucket</td><td><span class="owner-pill fs2">FS2</span></td><td>1h · h0–h1</td><td>0</td><td>—</td></tr>
+      <tr><td><a href="#pbi-02" class="pbi-id-link">PBI-02</a></td><td>FastAPI Backend Scaffolding</td><td><span class="owner-pill fs1">FS1</span></td><td>2h · h0–h2</td><td>0</td><td>PBI-01 (env vars)</td></tr>
+      <tr><td><a href="#pbi-03" class="pbi-id-link">PBI-03</a></td><td>Database Models + Engine</td><td><span class="owner-pill fs2">FS2</span></td><td>1h · h1–h2</td><td>0</td><td>PBI-01</td></tr>
+      <tr><td><a href="#pbi-04" class="pbi-id-link">PBI-04</a></td><td>Gemini SDK Spike + AI Module Skeleton</td><td><span class="owner-pill ai">AI</span></td><td>2h · h0–h2</td><td>0</td><td>—</td></tr>
+      <tr><td><a href="#pbi-05" class="pbi-id-link">PBI-05</a></td><td>Next.js Frontend Scaffolding</td><td><span class="owner-pill fe">FE</span></td><td>2h · h0–h2</td><td>0</td><td>—</td></tr>
+      <tr><td><a href="#pbi-06" class="pbi-id-link">PBI-06</a></td><td>Storage Adapter (Supabase + Gemini Files Cache)</td><td><span class="owner-pill fs2">FS2</span></td><td>4h · h2–h6</td><td>1</td><td>PBI-03, PBI-04</td></tr>
+      <tr><td><a href="#pbi-07" class="pbi-id-link">PBI-07</a></td><td>Blueprint Extraction Prompt</td><td><span class="owner-pill ai">AI</span></td><td>4h · h2–h6</td><td>1</td><td>PBI-04</td></tr>
+      <tr><td><a href="#pbi-08" class="pbi-id-link">PBI-08</a></td><td>Session + Upload + Blueprint Endpoints</td><td><span class="owner-pill fs1">FS1</span></td><td>6h · h2–h8</td><td>1</td><td>PBI-02, PBI-06, PBI-07</td></tr>
+      <tr><td><a href="#pbi-09" class="pbi-id-link">PBI-09</a></td><td>Upload Page UI</td><td><span class="owner-pill fe">FE</span></td><td>3h · h2–h5</td><td>1</td><td>PBI-05</td></tr>
+      <tr><td><a href="#pbi-10" class="pbi-id-link">PBI-10</a></td><td>Blueprint Review Page UI</td><td><span class="owner-pill fe">FE</span></td><td>3h · h5–h8</td><td>1</td><td>PBI-05, PBI-07 (sample)</td></tr>
+      <tr><td><a href="#pbi-11" class="pbi-id-link">PBI-11</a></td><td>Paper Schema + Splice Helper</td><td><span class="owner-pill fs2">FS2</span></td><td>3h · h5–h8</td><td>1</td><td>PBI-03</td></tr>
+      <tr><td><a href="#pbi-12" class="pbi-id-link">PBI-12</a></td><td>Paper Generation Prompt</td><td><span class="owner-pill ai">AI</span></td><td>5h · h8–h13</td><td>2</td><td>PBI-07, PBI-11</td></tr>
+      <tr><td><a href="#pbi-13" class="pbi-id-link">PBI-13</a></td><td>Question Regeneration Prompt</td><td><span class="owner-pill ai">AI</span></td><td>1h · h13–h14</td><td>2</td><td>PBI-12</td></tr>
+      <tr><td><a href="#pbi-14" class="pbi-id-link">PBI-14</a></td><td>Generate + Edit + Regenerate Endpoints</td><td><span class="owner-pill fs1">FS1</span></td><td>6h · h8–h14</td><td>2</td><td>PBI-08, PBI-11, PBI-12, PBI-13</td></tr>
+      <tr><td><a href="#pbi-15" class="pbi-id-link">PBI-15</a></td><td>Editable Paper Page UI</td><td><span class="owner-pill fe">FE</span></td><td>6h · h8–h14</td><td>2</td><td>PBI-09, PBI-12 (sample)</td></tr>
+      <tr><td><a href="#pbi-16" class="pbi-id-link">PBI-16</a></td><td>Jinja Paper Template + Print CSS</td><td><span class="owner-pill fs2">FS2</span></td><td>4h · h14–h18</td><td>3</td><td>PBI-11</td></tr>
+      <tr><td><a href="#pbi-17" class="pbi-id-link">PBI-17</a></td><td>Export Endpoint + Next.js Proxy Route</td><td><span class="owner-pill fs1">FS1</span></td><td>2h · h14–h16</td><td>3</td><td>PBI-16</td></tr>
+      <tr><td><a href="#pbi-18" class="pbi-id-link">PBI-18</a></td><td>Export Preview Page UI</td><td><span class="owner-pill fe">FE</span></td><td>4h · h14–h18</td><td>3</td><td>PBI-15, PBI-17</td></tr>
+      <tr><td><a href="#pbi-19" class="pbi-id-link">PBI-19</a></td><td>AI Prompt Polish + Retry Wrapper</td><td><span class="owner-pill ai">AI</span></td><td>2h · h14–h16</td><td>3</td><td>PBI-12, PBI-13</td></tr>
+      <tr><td><a href="#pbi-20" class="pbi-id-link">PBI-20</a></td><td>Seed Data + Smoke Tests</td><td><span class="owner-pill fs2">FS2</span></td><td>2h · h18–h20</td><td>4</td><td>PBI-14</td></tr>
+      <tr><td><a href="#pbi-21" class="pbi-id-link">PBI-21</a></td><td>Error Handling + Health Check</td><td><span class="owner-pill fs1">FS1</span></td><td>2h · h18–h20</td><td>4</td><td>PBI-17</td></tr>
+      <tr><td><a href="#pbi-22" class="pbi-id-link">PBI-22</a></td><td>Loading / Empty / Error States</td><td><span class="owner-pill fe">FE</span></td><td>2h · h18–h20</td><td>4</td><td>PBI-18</td></tr>
+      <tr><td><a href="#pbi-23" class="pbi-id-link">PBI-23</a></td><td>AI Edge Case Hardening</td><td><span class="owner-pill ai">AI</span></td><td>2h · h16–h18</td><td>4</td><td>PBI-19</td></tr>
+      <tr><td><a href="#pbi-24" class="pbi-id-link">PBI-24</a></td><td>Demo Script + Backup Recording</td><td><span class="owner-pill team">TEAM</span></td><td>1h · h19–h20</td><td>4</td><td>All</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================================ -->
+<section id="sprint-0">
+  <h2>3. Sprint 0 — Foundations (h0–h2)</h2>
+  <p class="section-lead">Everyone scaffolds in parallel. <strong>PBI-01 is the critical path</strong>: until FS2 shares the Supabase credentials, FS1 and the AI engineer can write code but not run it end-to-end. Target: complete Sprint 0 by h2.</p>
+
+  <!-- PBI-01 -->
+  <article class="pbi fs2" id="pbi-01">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-01</span><span class="pbi-name">Supabase Project + Storage Bucket</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">1h · h0–h1</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Create the shared Supabase project that hosts our Postgres DB and the <code>uploads</code> storage bucket. Share credentials with the team so everyone can connect. <strong>This blocks every other backend task</strong> — do it first, share creds within 30 minutes.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill none">None — start immediately</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>ShipHappens/backend/.env.example</code></li><li><code>ShipHappens/.gitignore</code> (verify <code>.env</code> ignored)</li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-02</span><span class="dep-pill">PBI-03</span><span class="dep-pill">PBI-06</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Sign in / sign up at <code>https://supabase.com</code> (use a shared team account if possible).</li>
+          <li>Click "New project" — name it <code>shiphappens-mvp</code>. Pick the region closest to the team. Set a strong DB password and save it in the team password manager.</li>
+          <li>Wait ~2 minutes for provisioning.</li>
+          <li>Go to <strong>Storage</strong> → <strong>New bucket</strong> → name <code>uploads</code>, set to <strong>Private</strong>.</li>
+          <li>Go to <strong>Project Settings → API</strong> → copy <em>Project URL</em> and <em>service_role secret</em>.</li>
+          <li>Go to <strong>Project Settings → Database → Connection string</strong> → copy the <strong>Session pooler</strong> URI (port 5432, transaction mode).</li>
+          <li>Create <code>backend/.env.example</code> with placeholders: <code>SUPABASE_URL=</code>, <code>SUPABASE_SERVICE_KEY=</code>, <code>SUPABASE_DB_URL=</code>, <code>SUPABASE_BUCKET=uploads</code>, <code>GOOGLE_API_KEY=</code>.</li>
+          <li>Post the actual values in a <strong>pinned team chat message</strong> (NOT in git). Each dev copies them into their local <code>backend/.env</code>.</li>
+          <li>Run a quick verification: <code>psql "$SUPABASE_DB_URL" -c "select 1;"</code> from one teammate's laptop.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Supabase project is up, <code>uploads</code> bucket exists and is Private.</li>
+          <li><code>backend/.env.example</code> is committed with all 5 keys (no real values).</li>
+          <li>All 4 teammates confirm they can connect via <code>psql</code> or the Supabase dashboard.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-02 -->
+  <article class="pbi fs1" id="pbi-02">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-02</span><span class="pbi-name">FastAPI Backend Scaffolding</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs1">FS1</span><span class="pbi-hours">2h · h0–h2</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Stand up the FastAPI app with config, CORS, session cookie middleware, and a health check. After this, the server boots cleanly and the OpenAPI docs render. Will be empty (no routes) — those come in later PBIs.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-01</span> (for env vars, but you can scaffold without them)</p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/pyproject.toml</code></li><li><code>backend/main.py</code></li><li><code>backend/config.py</code></li><li><code>backend/middleware/session.py</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-08</span><span class="dep-pill">PBI-14</span><span class="dep-pill">PBI-17</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Open <code>backend/pyproject.toml</code>. Remove <code>pgvector</code> and <code>alembic</code> from <code>dependencies</code>. Add <code>"supabase>=2.0"</code> and <code>"jinja2>=3.1"</code>.</li>
+          <li>Run <code>uv sync</code>.</li>
+          <li>Replace <code>backend/main.py</code>: import FastAPI, create <code>app = FastAPI(title="ShipHappens")</code>, mount CORS for <code>http://localhost:3000</code> with <code>allow_credentials=True</code>.</li>
+          <li>Create <code>backend/config.py</code> with a <code>Settings</code> class (extends <code>BaseSettings</code> from <code>pydantic-settings</code>): fields for <code>SUPABASE_URL</code>, <code>SUPABASE_SERVICE_KEY</code>, <code>SUPABASE_DB_URL</code>, <code>SUPABASE_BUCKET</code>, <code>GOOGLE_API_KEY</code>, <code>GEMINI_GENERATION_MODEL</code>, <code>GEMINI_FAST_MODEL</code>, <code>CORS_ORIGIN</code>, <code>SESSION_COOKIE_NAME</code>.</li>
+          <li>Create <code>backend/middleware/session.py</code>: an ASGI middleware that reads the <code>sid</code> cookie if present, sets it on <code>request.state.session_id</code>, and lets endpoints set/clear it via response headers.</li>
+          <li>Add <code>GET /healthz</code> route returning <code>{"ok": True}</code> (extend later to ping DB + Gemini).</li>
+          <li>Add a startup hook placeholder where FS2 will mount <code>create_all()</code>.</li>
+          <li>Verify <code>uv run uvicorn main:app --reload</code> starts cleanly.</li>
+          <li>Verify <code>http://localhost:8000/docs</code> renders OpenAPI UI and <code>/healthz</code> returns 200.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Server starts with no exceptions on a clean checkout.</li>
+          <li><code>/healthz</code> returns 200 with <code>{"ok": true}</code>.</li>
+          <li>OpenAPI UI loads at <code>/docs</code>.</li>
+          <li>CORS preflight from <code>http://localhost:3000</code> succeeds.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-03 -->
+  <article class="pbi fs2" id="pbi-03">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-03</span><span class="pbi-name">Database Models + Engine</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">1h · h1–h2</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Define the three SQLModel tables (<code>Session</code>, <code>SourceFile</code>, <code>Paper</code>) and wire the engine to Supabase. On app startup, <code>create_all()</code> ensures the tables exist. No Alembic — keep it simple.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-01</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/db/__init__.py</code></li><li><code>backend/db/engine.py</code></li><li><code>backend/db/models.py</code></li><li><code>backend/main.py</code> (startup hook)</li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-06</span><span class="dep-pill">PBI-08</span><span class="dep-pill">PBI-11</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/db/engine.py</code> with <code>engine = create_engine(settings.SUPABASE_DB_URL, pool_pre_ping=True)</code>.</li>
+          <li>Add a <code>get_session()</code> generator yielding a <code>Session(engine)</code> for FastAPI dependency injection.</li>
+          <li>Create <code>backend/db/models.py</code> with three SQLModel classes matching <code>build.html §4.1</code>: <code>Session</code>, <code>SourceFile</code>, <code>Paper</code>.</li>
+          <li>For <code>blueprint_json</code> and <code>paper_json</code> on <code>Paper</code>, use <code>sa_column=Column(JSONB)</code> from <code>sqlalchemy.dialects.postgresql</code>.</li>
+          <li>In <code>backend/main.py</code> startup hook, call <code>SQLModel.metadata.create_all(engine)</code>.</li>
+          <li>Restart the backend and verify the three tables appear in Supabase dashboard → Table Editor.</li>
+          <li>Manually insert one row via Supabase SQL editor and verify it persists.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Tables <code>session</code>, <code>sourcefile</code>, <code>paper</code> visible in Supabase.</li>
+          <li>App starts without DB errors.</li>
+          <li>Inserting a sample <code>session</code> row from the SQL editor works.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-04 -->
+  <article class="pbi ai" id="pbi-04">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-04</span><span class="pbi-name">Gemini SDK Spike + AI Module Skeleton</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">2h · h0–h2</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Prove out the <code>google-genai</code> SDK end-to-end: upload a PDF via Files API, call <code>generate_content</code> with a Pydantic <code>response_schema</code>, get back valid structured JSON. This locks the pattern the next three prompts will copy.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill none">None — start immediately</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/__init__.py</code></li><li><code>backend/ai/client.py</code></li><li><code>backend/ai/spike.py</code></li><li><code>backend/ai/samples/</code> (sample PDFs + outputs)</li><li><code>backend/ai/README.md</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-06</span><span class="dep-pill">PBI-07</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Obtain a Google API key with Gemini enabled (or use one from the team). Put it in <code>backend/.env</code> as <code>GOOGLE_API_KEY</code>.</li>
+          <li>Verify <code>google-genai</code> is installed (already in <code>pyproject.toml</code>).</li>
+          <li>Place 2 sample A-Level English PDFs in <code>backend/ai/samples/source/</code> for testing.</li>
+          <li>Create <code>backend/ai/client.py</code> exposing a module-level <code>client = genai.Client()</code> initialized from <code>config.settings.GOOGLE_API_KEY</code>.</li>
+          <li>Create <code>backend/ai/spike.py</code>:<br>(a) Upload one sample PDF via <code>client.files.upload(file=path)</code>.<br>(b) Define a small Pydantic schema (e.g. <code>class Summary(BaseModel): title: str; sections: list[str]</code>).<br>(c) Call <code>client.models.generate_content(model="gemini-2.5-flash", contents=[file, "Summarise this paper."], config={"response_mime_type": "application/json", "response_schema": Summary})</code>.<br>(d) Print the parsed JSON.</li>
+          <li>Run the spike. Iterate until the JSON parses cleanly twice in a row.</li>
+          <li>Save the sample raw output to <code>backend/ai/samples/spike_output.json</code>.</li>
+          <li>Write <code>backend/ai/README.md</code> documenting (one paragraph each): how to upload a file, how to call with a schema, how the retry pattern will work.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li><code>uv run python -m backend.ai.spike</code> exits 0 and prints valid JSON.</li>
+          <li>Sample JSON committed to <code>backend/ai/samples/</code>.</li>
+          <li>README documents the SDK pattern for teammates to copy.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-05 -->
+  <article class="pbi fe" id="pbi-05">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-05</span><span class="pbi-name">Next.js Frontend Scaffolding</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">2h · h0–h2</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Stand up the Next.js wizard shell with Tailwind, shadcn/ui, Zustand store, typed API wrapper, and four empty wizard pages connected by a sticky progress indicator.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill none">None — start immediately</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>ShipHappens/front/</code> (whole tree)</li><li><code>front/app/(wizard)/layout.tsx</code></li><li><code>front/app/(wizard)/{upload,blueprint,paper,export}/page.tsx</code></li><li><code>front/lib/store.ts</code></li><li><code>front/lib/api.ts</code></li><li><code>front/.env.local</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-09</span><span class="dep-pill">PBI-10</span><span class="dep-pill">PBI-15</span><span class="dep-pill">PBI-18</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li><code>cd ShipHappens/front</code> (or <code>cd ShipHappens</code> if folder doesn't exist) and run <code>npx create-next-app@latest front</code> with: TypeScript ✓, Tailwind ✓, App Router ✓, ESLint ✓, no <code>src/</code> dir, default import alias.</li>
+          <li><code>cd front</code>, run <code>npx shadcn@latest init</code> (Slate base, CSS variables, default).</li>
+          <li>Add components: <code>npx shadcn@latest add button card textarea input accordion badge skeleton sonner separator</code>.</li>
+          <li>Install: <code>npm install zustand swr react-dropzone</code>.</li>
+          <li>Create <code>front/lib/store.ts</code> — Zustand store with shape: <code>{ sessionId: string|null; blueprint: any|null; paper: any|null; lastSavedAt: string|null; reset(): void }</code>.</li>
+          <li>Create <code>front/lib/api.ts</code> — a typed fetch wrapper with <code>credentials: 'include'</code> and base URL from <code>process.env.NEXT_PUBLIC_API_BASE_URL</code>. Export functions stubs: <code>createSession</code>, <code>uploadFiles</code>, <code>buildBlueprint</code>, <code>generatePaper</code>, <code>savePaper</code>, <code>regenerateQuestion</code>.</li>
+          <li>Create <code>front/app/(wizard)/layout.tsx</code> with a sticky top bar showing 4 step pills (Upload / Blueprint / Paper / Export), highlighting the active route.</li>
+          <li>Create empty page files for the four wizard routes, each rendering an <code>h1</code> with the step name so navigation is verifiable.</li>
+          <li>Create <code>front/.env.local</code> with <code>NEXT_PUBLIC_API_BASE_URL=http://localhost:8000</code>.</li>
+          <li>Verify <code>npm run dev</code> starts on port 3000, all four routes load, progress indicator highlights correctly.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li><code>npm run dev</code> starts without errors on port 3000.</li>
+          <li>All four wizard routes navigate successfully.</li>
+          <li>Sticky progress indicator visible on every wizard page.</li>
+          <li>Zero TypeScript errors.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ============================================ -->
+<section id="sprint-1">
+  <h2>4. Sprint 1 — Vertical Slice 1: Upload → Blueprint (h2–h8)</h2>
+  <p class="section-lead">By h8 we should demo "upload 3 PDFs → see extracted Blueprint on screen". This is the most important milestone in the sprint — protect it ruthlessly.</p>
+
+  <!-- PBI-06 -->
+  <article class="pbi fs2" id="pbi-06">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-06</span><span class="pbi-name">Storage Adapter (Supabase + Gemini Files Cache)</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">4h · h2–h6</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">A single Python module that takes an incoming PDF, uploads it to Supabase Storage, uploads the same bytes to Gemini's Files API, and caches the resulting <code>gemini_file_uri</code> on the <code>SourceFile</code> row. Idempotent — calling twice with the same row reuses the cached URI.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-03</span><span class="dep-pill">PBI-04</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/storage.py</code></li><li><code>backend/tests/test_storage.py</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-08</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/storage.py</code>.</li>
+          <li>Initialize Supabase client: <code>supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_KEY)</code>.</li>
+          <li>Implement <code>upload_pdf(session_id: UUID, file: UploadFile, db: Session) -&gt; SourceFile</code>:<br>(a) Generate <code>file_uuid</code>.<br>(b) Read bytes from the UploadFile.<br>(c) Upload to bucket: <code>supabase.storage.from_("uploads").upload(f"{session_id}/{file_uuid}.pdf", bytes, {"content-type": "application/pdf"})</code>.<br>(d) Create <code>SourceFile</code> row with <code>storage_path</code> set, <code>gemini_file_uri=None</code>.<br>(e) Commit and return.</li>
+          <li>Implement <code>ensure_gemini_file(source_file: SourceFile, db: Session) -&gt; str</code>:<br>(a) If <code>source_file.gemini_file_uri</code> is set, return it.<br>(b) Otherwise: download bytes from Supabase Storage via <code>supabase.storage.from_("uploads").download(storage_path)</code>.<br>(c) Write to a temp file, then <code>genai_client.files.upload(file=tmp_path)</code>.<br>(d) Update <code>source_file.gemini_file_uri = uploaded.uri</code>; commit.<br>(e) Return the URI.</li>
+          <li>Implement <code>list_gemini_files(session_id: UUID, db: Session) -&gt; list[str]</code> — for each <code>SourceFile</code> in the session, call <code>ensure_gemini_file</code> and collect URIs.</li>
+          <li>Write a small pytest in <code>backend/tests/test_storage.py</code>: upload one sample PDF, verify row inserted, call <code>ensure_gemini_file</code> twice, verify URI is reused on the second call (no second Gemini upload).</li>
+          <li>Add module docstring documenting the three public functions.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Calling <code>upload_pdf</code> once writes both to Supabase Storage and DB.</li>
+          <li>Calling <code>ensure_gemini_file</code> twice on the same row only hits Gemini once.</li>
+          <li>Bucket path follows <code>{session_id}/{file_uuid}.pdf</code> convention.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-07 -->
+  <article class="pbi ai" id="pbi-07">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-07</span><span class="pbi-name">Blueprint Extraction Prompt</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">4h · h2–h6</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">The first real Gemini call. Given a list of <code>gemini_file_uri</code>s pointing to past papers, return a <code>BlueprintSchema</code> JSON describing the shared structure: sections, question types, marks distribution, instructions pattern, tone notes.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-04</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/schemas.py</code></li><li><code>backend/ai/blueprint.py</code></li><li><code>backend/ai/samples/blueprint_*.json</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-08</span><span class="dep-pill">PBI-10</span><span class="dep-pill">PBI-12</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/ai/schemas.py</code>. Define <code>BlueprintSchema</code> with nested <code>SectionBlueprint</code> matching <code>build.html §4.2</code> exactly.</li>
+          <li>Create <code>backend/ai/blueprint.py</code> with <code>def extract_blueprint(file_uris: list[str]) -&gt; BlueprintSchema</code>.</li>
+          <li>Build the prompt as a multi-line string. Include: role ("You are an exam-paper analyst"), task ("extract the shared structural blueprint"), JSON requirements ("output JSON matching the schema; do not include markdown fences"), constraints ("preserve the marks distribution; identify recurring question types").</li>
+          <li>Call <code>client.models.generate_content(model="gemini-2.5-flash", contents=[*files, prompt], config={"response_mime_type": "application/json", "response_schema": BlueprintSchema})</code>.</li>
+          <li>Wrap with try/except + 1 retry on <code>pydantic.ValidationError</code> or JSON parse errors.</li>
+          <li>Log raw text on failure for debugging.</li>
+          <li>Test against both sample PDF sets in <code>backend/ai/samples/source/</code>.</li>
+          <li>Commit the JSON outputs as <code>backend/ai/samples/blueprint_setA.json</code> and <code>blueprint_setB.json</code>. <strong>FE will use these for mocking</strong> — coordinate the field names exactly.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Function returns a valid <code>BlueprintSchema</code> instance for both sample sets.</li>
+          <li>Sample JSON outputs committed for FE mocking.</li>
+          <li>Retry-on-parse-failure tested by injecting a temporary bad schema.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-08 -->
+  <article class="pbi fs1" id="pbi-08">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-08</span><span class="pbi-name">Session + Upload + Blueprint Endpoints</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs1">FS1</span><span class="pbi-hours">6h · h2–h8</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">The first three HTTP endpoints: create a session, upload PDFs, run blueprint extraction. After this PBI, the entire upload→blueprint slice is callable via <code>curl</code>.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-02</span><span class="dep-pill">PBI-06</span><span class="dep-pill">PBI-07</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/routes/sessions.py</code></li><li><code>backend/routes/uploads.py</code></li><li><code>backend/routes/blueprint.py</code></li><li><code>backend/main.py</code> (router mounting)</li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-09</span><span class="dep-pill">PBI-10</span><span class="dep-pill">PBI-14</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/routes/sessions.py</code> with <code>POST /sessions</code>: accepts optional <code>{title, board, level, subject}</code>, inserts a <code>Session</code> row, returns <code>{session_id}</code> and sets the <code>sid</code> cookie via response.set_cookie.</li>
+          <li>Add <code>GET /sessions/{id}</code>: returns <code>{session, blueprint, paper}</code> for resume support (used after refresh).</li>
+          <li>Create <code>backend/routes/uploads.py</code> with <code>POST /sessions/{id}/upload</code>: accepts multipart, loops over <code>files</code>, calls <code>storage.upload_pdf()</code> for each, then <code>storage.ensure_gemini_file()</code>. Returns <code>{source_files: [...]}</code>.</li>
+          <li>Add file validation: reject non-PDF, reject files &gt; 25 MB, reject more than 5 per session.</li>
+          <li>Create <code>backend/routes/blueprint.py</code> with <code>POST /sessions/{id}/blueprint</code>: loads source files for the session, calls <code>storage.list_gemini_files()</code>, calls <code>ai.extract_blueprint(uris)</code>, upserts <code>Paper.blueprint_json</code>, returns the blueprint.</li>
+          <li>Mount all three routers in <code>backend/main.py</code>.</li>
+          <li>Add explicit error responses: 404 if session not found, 422 if file invalid, 502 if Gemini call fails.</li>
+          <li>Smoke test with <code>curl</code>:<br>(a) <code>curl -X POST localhost:8000/sessions -c cookies.txt -H "Content-Type: application/json" -d '{}'</code><br>(b) <code>curl -X POST localhost:8000/sessions/{id}/upload -b cookies.txt -F "files=@a.pdf" -F "files=@b.pdf"</code><br>(c) <code>curl -X POST localhost:8000/sessions/{id}/blueprint -b cookies.txt</code>.</li>
+          <li>Verify the blueprint JSON returned matches <code>BlueprintSchema</code>.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>OpenAPI docs at <code>/docs</code> show all 3 endpoints with correct schemas.</li>
+          <li>Full <code>curl</code> flow works end-to-end with 2-3 real PDFs.</li>
+          <li>Cookie-based session works across requests.</li>
+          <li>Error responses are structured (404 / 422 / 502).</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-09 -->
+  <article class="pbi fe" id="pbi-09">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-09</span><span class="pbi-name">Upload Page UI</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">3h · h2–h5</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">The first user-facing screen: drag-drop PDFs, optional metadata fields, "Analyze" button that runs the three-step API chain and routes to the Blueprint page.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-05</span> &nbsp; (can build against fake API responses until PBI-08 is ready)</p>
+          <h4>Files touched</h4>
+          <ul><li><code>front/app/(wizard)/upload/page.tsx</code></li><li><code>front/components/UploadDropzone.tsx</code></li><li><code>front/lib/api.ts</code> (flesh out 3 functions)</li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-15</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>front/components/UploadDropzone.tsx</code> wrapping <code>react-dropzone</code>: accept <code>.pdf</code> only, min 1 max 5 files, show dashed border + hover state.</li>
+          <li>Display selected files as a list: filename, size, "Remove" button per row.</li>
+          <li>Build <code>front/app/(wizard)/upload/page.tsx</code>: render the dropzone, optional inputs (Title, Board, Level, Subject), primary "Analyze" button.</li>
+          <li>Disable "Analyze" when zero files are selected.</li>
+          <li>On click "Analyze":<br>(a) call <code>createSession({title, board, level, subject})</code> → save <code>sessionId</code> to Zustand;<br>(b) call <code>uploadFiles(sessionId, files)</code>;<br>(c) call <code>buildBlueprint(sessionId)</code> → save returned blueprint to Zustand;<br>(d) <code>router.push("/blueprint")</code>.</li>
+          <li>Show loading state during the chain: "Uploading… Analyzing… (this can take up to a minute)".</li>
+          <li>On error: show toast via sonner with the error message, keep files selected so user can retry.</li>
+          <li>Manual test: click through with 2 real PDFs (or use sample blueprint JSON if PBI-08 not ready).</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Drag-drop works; rejects non-PDF; caps at 5 files.</li>
+          <li>"Analyze" runs the 3-call chain and routes on success.</li>
+          <li>Loading and error states visible.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-10 -->
+  <article class="pbi fe" id="pbi-10">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-10</span><span class="pbi-name">Blueprint Review Page UI</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">3h · h5–h8</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Read-only display of the extracted Blueprint so the teacher can sanity-check before generation. Single "Generate New Paper" CTA triggers the next step.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-05</span><span class="dep-pill">PBI-07</span> (sample JSON for mocking)</p>
+          <h4>Files touched</h4>
+          <ul><li><code>front/app/(wizard)/blueprint/page.tsx</code></li><li><code>front/components/BlueprintCard.tsx</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-15</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Build <code>front/app/(wizard)/blueprint/page.tsx</code>: read <code>blueprint</code> from Zustand; if null, redirect back to <code>/upload</code>.</li>
+          <li>Render the top-level header card: subject, board, level, duration, total marks.</li>
+          <li>Render an <code>Accordion</code> with one item per section. Each section shows: title, marks <code>Badge</code>, instructions (italic), comma-separated question types.</li>
+          <li>Add a "Show tone notes" expandable area at the bottom.</li>
+          <li>Primary "Generate New Paper" button at the bottom: on click, call <code>generatePaper(sessionId)</code>, save returned paper to Zustand, route to <code>/paper</code>.</li>
+          <li>Show loading state during generation: "Generating paper… this can take up to a minute" with an indeterminate progress bar.</li>
+          <li>Secondary "Re-analyze" button calling <code>buildBlueprint(sessionId)</code> again.</li>
+          <li>Mock with <code>backend/ai/samples/blueprint_setA.json</code> until PBI-08 is live.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Blueprint renders cleanly with all sections shown.</li>
+          <li>"Generate" button calls the backend and routes on success.</li>
+          <li>Loading state visible; no UI freeze.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-11 -->
+  <article class="pbi fs2" id="pbi-11">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-11</span><span class="pbi-name">Paper Schema + Splice Helper</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">3h · h5–h8</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Define <code>PaperSchema</code> and <code>QuestionSchema</code> Pydantic models, plus a pure helper that splices a regenerated question into an existing paper by <code>question_id</code>. Both AI and FS1 will import these.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-03</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/schemas.py</code> (extend)</li><li><code>backend/utils/paper.py</code></li><li><code>backend/tests/test_paper_utils.py</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-12</span><span class="dep-pill">PBI-14</span><span class="dep-pill">PBI-16</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Add <code>QuestionSchema</code> and <code>PaperSchema</code> to <code>backend/ai/schemas.py</code> matching <code>build.html §4.3</code>.</li>
+          <li>Create <code>backend/utils/paper.py</code> with <code>validate_paper(data: dict) -&gt; PaperSchema</code> — wraps Pydantic with a friendlier <code>ValueError</code> on failure.</li>
+          <li>Implement <code>splice_question(paper_json: dict, question_id: str, new_question: dict) -&gt; dict</code>: returns a deep-copied paper with the matching question replaced. Preserves section ordering and question ordering. Raises <code>KeyError</code> if <code>question_id</code> not found.</li>
+          <li>Write pytest cases in <code>backend/tests/test_paper_utils.py</code>:<br>(a) splice in first question, last question, and middle question — order preserved;<br>(b) splice with unknown id raises;<br>(c) validate accepts a known-good fixture, rejects a known-bad fixture.</li>
+          <li>Run <code>uv run pytest backend/tests/test_paper_utils.py -v</code>; all green.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Schemas import cleanly in both <code>backend/ai/</code> and <code>backend/routes/</code>.</li>
+          <li>Splice preserves question ordering (verified by test).</li>
+          <li>All pytest cases pass.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <div class="milestone">
+    <strong>MILESTONE — h8:</strong> End-to-end demo of "Upload 3 PDFs → see Blueprint on screen". If this isn't working at h8, invoke a Sprint-2 scope cut immediately (see <a href="#dod">Global DoD</a>).
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="sprint-2">
+  <h2>5. Sprint 2 — Vertical Slice 2: Generate + Edit (h8–h14)</h2>
+  <p class="section-lead">By h14: "click Generate → edit a question → regenerate a question". This is the heart of the product.</p>
+
+  <!-- PBI-12 -->
+  <article class="pbi ai" id="pbi-12">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-12</span><span class="pbi-name">Paper Generation Prompt</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">5h · h8–h13</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Given a Blueprint and the source PDFs, generate a brand-new paper of the same shape. Single biggest AI workload of the sprint — use <code>gemini-2.5-pro</code> for quality.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-07</span><span class="dep-pill">PBI-11</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/generate.py</code></li><li><code>backend/ai/samples/paper_*.json</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-13</span><span class="dep-pill">PBI-14</span><span class="dep-pill">PBI-15</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/ai/generate.py</code> with <code>def generate_paper(blueprint: BlueprintSchema, file_uris: list[str]) -&gt; PaperSchema</code>.</li>
+          <li>Build a detailed prompt covering: role, task, blueprint as JSON, hard constraints (every <code>question.id</code> unique &amp; stable, total marks must sum to blueprint's total, no empty prompts, follow tone notes).</li>
+          <li>Call <code>client.models.generate_content(model="gemini-2.5-pro", contents=[*files, prompt], config={"response_mime_type": "application/json", "response_schema": PaperSchema})</code>.</li>
+          <li>Add post-validation: confirm marks sum, confirm IDs are unique, raise on violation.</li>
+          <li>Wrap with try/except + 1 retry on validation failure.</li>
+          <li>Test against both sample blueprints; manually inspect outputs for quality.</li>
+          <li>Save samples to <code>backend/ai/samples/paper_setA.json</code> and <code>paper_setB.json</code>.</li>
+          <li>Notify FE that the schema is locked — they can swap mock data for real responses.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Function returns a valid <code>PaperSchema</code> for both sample sets.</li>
+          <li>Total marks sum matches blueprint; all question IDs unique.</li>
+          <li>Samples committed for FE.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-13 -->
+  <article class="pbi ai" id="pbi-13">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-13</span><span class="pbi-name">Question Regeneration Prompt</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">1h · h13–h14</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Replace a single question in an existing paper. Returns only the replacement question object. Uses fast model for snappy UX.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-12</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/regenerate.py</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-14</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/ai/regenerate.py</code> with <code>def regenerate_question(paper: PaperSchema, blueprint: BlueprintSchema, question_id: str, nudge: str | None = None) -&gt; QuestionSchema</code>.</li>
+          <li>Prompt: "Replace question {id} in the paper. The new question must be different from the original but match the blueprint's marks distribution and question type. Optional nudge: {nudge}. Return only the replacement question JSON."</li>
+          <li>Use <code>gemini-2.5-flash</code> with <code>response_schema=QuestionSchema</code>.</li>
+          <li>Validate that returned <code>id</code> equals the input <code>question_id</code> (if model invents a new id, overwrite).</li>
+          <li>Test by regenerating 3 different questions from one sample paper.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Returns a valid <code>QuestionSchema</code> with matching <code>id</code> and similar marks.</li>
+          <li>Nudge text (when provided) is honoured by the output.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-14 -->
+  <article class="pbi fs1" id="pbi-14">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-14</span><span class="pbi-name">Generate + Edit + Regenerate Endpoints</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs1">FS1</span><span class="pbi-hours">6h · h8–h14</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Three endpoints: trigger full paper generation, save user edits, regenerate one question. Uses FS2's validators and splice helper; uses AI's prompts.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-08</span><span class="dep-pill">PBI-11</span><span class="dep-pill">PBI-12</span><span class="dep-pill">PBI-13</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/routes/generate.py</code></li><li><code>backend/routes/paper.py</code></li><li><code>backend/main.py</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-17</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/routes/generate.py</code> with <code>POST /sessions/{id}/generate</code>: load blueprint + file URIs from DB, call <code>ai.generate_paper()</code>, save to <code>Paper.paper_json</code>, return <code>{paper}</code>.</li>
+          <li>Create <code>backend/routes/paper.py</code> with <code>PUT /sessions/{id}/paper</code>: accept full <code>{paper}</code> body, call <code>utils.paper.validate_paper()</code>, save, return <code>{saved_at}</code>.</li>
+          <li>Add <code>POST /sessions/{id}/questions/{qid}/regenerate</code> to <code>routes/paper.py</code>: load <code>paper_json</code> + <code>blueprint_json</code>, call <code>ai.regenerate_question()</code>, splice via <code>utils.paper.splice_question()</code>, save, return <code>{question}</code>.</li>
+          <li>Mount routers in <code>backend/main.py</code>.</li>
+          <li>Set request timeout to 120s on the generate route; Gemini Pro can be slow.</li>
+          <li>Smoke test with <code>curl</code>:<br>(a) generate after a successful blueprint;<br>(b) edit + PUT;<br>(c) regenerate a specific question id.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>All 3 endpoints visible in OpenAPI with correct schemas.</li>
+          <li><code>curl</code> end-to-end works through generate → edit → regenerate.</li>
+          <li>Splice preserves question ordering in the persisted paper.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-15 -->
+  <article class="pbi fe" id="pbi-15">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-15</span><span class="pbi-name">Editable Paper Page UI</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">6h · h8–h14</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">The product centerpiece. Render the generated paper as a series of editable cards: each question is its own card with auto-growing textareas, a regenerate button, and an inline nudge input. Autosave on edit.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-09</span><span class="dep-pill">PBI-12</span> (sample JSON OK for early dev)</p>
+          <h4>Files touched</h4>
+          <ul><li><code>front/app/(wizard)/paper/page.tsx</code></li><li><code>front/components/SectionCard.tsx</code></li><li><code>front/components/QuestionCard.tsx</code></li><li><code>front/lib/useAutosave.ts</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-18</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Build <code>front/app/(wizard)/paper/page.tsx</code>: read paper from Zustand; if null, redirect to <code>/blueprint</code>.</li>
+          <li>Render header with title, duration, total marks, instructions list.</li>
+          <li>Create <code>SectionCard.tsx</code>: card showing section title, marks badge, instructions, and child <code>QuestionCard</code>s.</li>
+          <li>Create <code>QuestionCard.tsx</code>: question number + marks badge in header, auto-grow <code>Textarea</code> for prompt, optional context-passage <code>Textarea</code> below, marks <code>Input</code>, "Regenerate" icon button.</li>
+          <li>Auto-grow textarea: use a ref and recalc <code>scrollHeight</code> on input.</li>
+          <li>Create <code>useAutosave.ts</code>: hook that debounces 800ms, calls <code>savePaper(sessionId, paper)</code>, exposes <code>{ status: "idle"|"saving"|"saved"|"error", lastSavedAt }</code>.</li>
+          <li>Display autosave status as a small text indicator at the top: "Saving…" / "Saved at HH:MM".</li>
+          <li>"Regenerate" button: on click, opens an inline <code>Input</code> for optional nudge, plus a confirm button. On confirm, show <code>Skeleton</code> over the card, call <code>regenerateQuestion(sessionId, qid, nudge)</code>, replace the question content with the response.</li>
+          <li>"Preview &amp; Export" primary button at bottom routes to <code>/export</code>.</li>
+          <li>Use <code>backend/ai/samples/paper_setA.json</code> for early dev; swap to real backend once PBI-14 lands.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Every question is editable; changes persist via autosave.</li>
+          <li>"Regenerate" replaces a single question without re-fetching the whole paper.</li>
+          <li>Autosave indicator visible and accurate.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <div class="milestone">
+    <strong>MILESTONE — h14:</strong> Demo "click Generate → edit any question → click Regenerate → see new content". If slipping, cut: nudge input first, then autosave (switch to explicit Save button), then regenerate entirely.
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="sprint-3">
+  <h2>6. Sprint 3 — Vertical Slice 3: Export (h14–h18)</h2>
+  <p class="section-lead">By h18: "click Download PDF → browser print preview shows a clean A4-formatted exam paper". Use browser print; no server-side PDF library required.</p>
+
+  <!-- PBI-16 -->
+  <article class="pbi fs2" id="pbi-16">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-16</span><span class="pbi-name">Jinja Paper Template + Print CSS</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">4h · h14–h18</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">A Jinja2 template that renders <code>paper_json</code> as a print-ready HTML page. Print CSS makes it look like a real A4 exam paper when the user prints to PDF.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-11</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/templates/paper.html.j2</code></li><li><code>backend/templates/print.css</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-17</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/templates/paper.html.j2</code>. Cover page section: title, duration, total marks, instructions list (numbered).</li>
+          <li>Loop <code>paper.sections</code>: heading <code>{{ section.title }}</code>, marks badge, instructions in italics.</li>
+          <li>Inner loop <code>section.questions</code>: question number in left margin, prompt, <code>[X marks]</code> in right margin.</li>
+          <li>Sub-parts loop: render <code>(a)</code>, <code>(b)</code>, <code>(c)</code> with prompts.</li>
+          <li>Optional <code>context_passage</code>: render in a bordered box above the prompt with smaller font.</li>
+          <li>Create <code>backend/templates/print.css</code>: <code>@page { size: A4; margin: 2cm; }</code>, serif font (Georgia or Times), <code>page-break-inside: avoid</code> on each question card, hide buttons / nav.</li>
+          <li>Inline the CSS into the template's <code>&lt;head&gt;</code> so the iframe renders standalone.</li>
+          <li>Test by rendering with <code>paper_setA.json</code> as a Python dict and opening the result in Chrome → File → Print → "Save as PDF" → verify A4 layout, marks in margin, no overflow.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Rendered HTML is well-formed and standalone (no external dependencies).</li>
+          <li>Chrome print preview shows clean A4 layout with marks in right margin.</li>
+          <li>No question is split across pages.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-17 -->
+  <article class="pbi fs1" id="pbi-17">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-17</span><span class="pbi-name">Export Endpoint + Next.js Proxy Route</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs1">FS1</span><span class="pbi-hours">2h · h14–h16</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Server endpoint that renders the Jinja template and returns HTML. Plus a Next.js API proxy so the iframe can be same-origin.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-14</span><span class="dep-pill">PBI-16</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/routes/export.py</code></li><li><code>front/app/api/proxy/export.html/route.ts</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-18</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/routes/export.py</code> with <code>GET /sessions/{id}/paper/export.html</code>: load <code>paper_json</code>, render Jinja template, return <code>HTMLResponse(content=html, status_code=200, media_type="text/html")</code>.</li>
+          <li>Mount the router in <code>backend/main.py</code>.</li>
+          <li>Create <code>front/app/api/proxy/export.html/route.ts</code>: Next.js Route Handler that reads the <code>sid</code> cookie from incoming request, makes a server-side fetch to <code>{BACKEND}/sessions/{sid}/paper/export.html</code> forwarding the cookie, streams the HTML response back to the browser.</li>
+          <li>Test by visiting <code>http://localhost:3000/api/proxy/export.html</code> after generating a paper — should render the exam paper HTML.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Direct <code>curl</code> to backend <code>/export.html</code> returns valid HTML.</li>
+          <li>Same-origin proxy route returns the same HTML when called from a browser logged in via cookie.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-18 -->
+  <article class="pbi fe" id="pbi-18">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-18</span><span class="pbi-name">Export Preview Page UI</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">4h · h14–h18</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Final wizard step. Full-width iframe shows the print-ready HTML; "Download PDF" button triggers the browser print dialog targeted at the iframe.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-15</span><span class="dep-pill">PBI-17</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>front/app/(wizard)/export/page.tsx</code></li><li><code>front/components/PrintFrame.tsx</code></li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-22</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Build <code>front/components/PrintFrame.tsx</code>: a <code>forwardRef</code> component that wraps an iframe with <code>src="/api/proxy/export.html"</code> at full width and ~A4-aspect-ratio height.</li>
+          <li>Build <code>front/app/(wizard)/export/page.tsx</code>: read <code>sessionId</code> from Zustand; if null, redirect to <code>/upload</code>.</li>
+          <li>Render the <code>PrintFrame</code> centered with a max-width container.</li>
+          <li>Add primary "Download PDF" button: on click, call <code>iframe.contentWindow?.print()</code> via the ref.</li>
+          <li>Add secondary "Back to Edit" button routing to <code>/paper</code>.</li>
+          <li>Show a "Loading preview…" state while the iframe is still loading.</li>
+          <li>Manual test in Chrome: click "Download PDF" → confirm browser print dialog opens with the paper preview → "Save as PDF" produces a clean A4 file.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Iframe renders the generated paper.</li>
+          <li>"Download PDF" opens the browser print dialog scoped to the iframe.</li>
+          <li>Generated PDF is A4 and well-formatted.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-19 -->
+  <article class="pbi ai" id="pbi-19">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-19</span><span class="pbi-name">AI Prompt Polish + Retry Wrapper</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">2h · h14–h16</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Now that the full flow is exercised, iterate on prompt quality. Extract the retry-on-parse-failure pattern into a single reusable wrapper used by all three prompts.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-12</span><span class="dep-pill">PBI-13</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/wrapper.py</code></li><li><code>backend/ai/blueprint.py</code> / <code>generate.py</code> / <code>regenerate.py</code> (refactor)</li></ul>
+        </div>
+        <div class="pbi-block">
+          <h4>Blocks</h4>
+          <p><span class="dep-pill">PBI-23</span></p>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/ai/wrapper.py</code> with <code>call_structured(model: str, contents: list, schema: type[BaseModel], retries: int = 1) -&gt; BaseModel</code> that handles parse failures with one retry and logs raw text on the second failure.</li>
+          <li>Refactor <code>blueprint.py</code>, <code>generate.py</code>, <code>regenerate.py</code> to use <code>call_structured</code>.</li>
+          <li>Iterate on the three prompts based on observed issues from PBI-12/13 testing: marks consistency, instruction tone, no off-topic content, English-paper-appropriate language.</li>
+          <li>Re-test all three prompts after refactor.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>All three AI functions use the same wrapper.</li>
+          <li>Retry triggers visible in logs when schema validation fails.</li>
+          <li>Output quality reviewed and improved on at least 2 test runs.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <div class="milestone">
+    <strong>MILESTONE — h18:</strong> Demo "Download PDF" producing a clean A4 paper. If slipping: drop the print CSS polish and ship plain HTML.
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="sprint-4">
+  <h2>7. Sprint 4 — Polish + Demo (h18–h20)</h2>
+  <p class="section-lead">Last two hours. No new features — only hardening and demo prep. If any milestone has slipped, those tasks bleed into this sprint and consume polish time.</p>
+
+  <!-- PBI-20 -->
+  <article class="pbi fs2" id="pbi-20">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-20</span><span class="pbi-name">Seed Data + Smoke Tests</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs2">FS2</span><span class="pbi-hours">2h · h18–h20</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">A backup demo path: a script that seeds Supabase with a pre-generated session + paper so the demo can fall back if a live Gemini call fails. Plus a smoke test script that hits every endpoint.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-14</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/seed.py</code></li><li><code>backend/scripts/smoke.py</code></li></ul>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Create <code>backend/seed.py</code>: insert a session with a known UUID, three source files (no real PDFs needed if we skip upload), and one pre-generated paper from the sample JSON.</li>
+          <li>Print the session UUID on completion so the demo presenter can navigate to it directly.</li>
+          <li>Create <code>backend/scripts/smoke.py</code>: a Python script using <code>httpx</code> that calls every endpoint in order, asserts 200, prints PASS/FAIL.</li>
+          <li>Run smoke against the running backend; fix any failures.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li><code>uv run python -m backend.seed</code> prints a demo session UUID.</li>
+          <li><code>uv run python -m backend.scripts.smoke</code> exits 0 with all PASS.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-21 -->
+  <article class="pbi fs1" id="pbi-21">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-21</span><span class="pbi-name">Error Handling + Health Check</span></div>
+      <div class="pbi-meta"><span class="owner-pill fs1">FS1</span><span class="pbi-hours">2h · h18–h20</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Tighten all error responses to a consistent shape, beef up the health check, and add request logging so demo-time failures are debuggable.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-17</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/middleware/errors.py</code></li><li><code>backend/main.py</code></li></ul>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Add a global exception handler that returns <code>{error: {code, message, details?}}</code> consistently.</li>
+          <li>Add request logging middleware: log method, path, status, duration.</li>
+          <li>Extend <code>/healthz</code>: <code>SELECT 1</code> against Supabase, dummy 1-token Gemini call, return <code>{ok, db, gemini}</code>.</li>
+          <li>Map common errors: <code>SQLAlchemyError</code> → 500, <code>ValidationError</code> → 422, <code>HTTPException</code> passthrough, <code>genai</code> errors → 502.</li>
+          <li>Test by hitting a non-existent session id and confirming the structured error.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Every error response follows the shape above.</li>
+          <li><code>/healthz</code> reports DB and Gemini liveness.</li>
+          <li>Request logs visible in the console.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-22 -->
+  <article class="pbi fe" id="pbi-22">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-22</span><span class="pbi-name">Loading / Empty / Error States</span></div>
+      <div class="pbi-meta"><span class="owner-pill fe">FE</span><span class="pbi-hours">2h · h18–h20</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Every button shows loading, every failure shows a toast, every page has a sensible empty state, every page has a "Start over" escape hatch.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-18</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>front/app/(wizard)/layout.tsx</code> (Start over button)</li><li>all wizard pages</li></ul>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Audit every API call site and ensure the triggering button shows a spinner / disabled state during the call.</li>
+          <li>Wrap every API call in try/catch + sonner toast on error with the structured error message.</li>
+          <li>Add empty states: Upload page when no files selected, Blueprint page when blueprint is null (link back to Upload), Paper page when paper is null.</li>
+          <li>Add a "Start over" link in the wizard layout's top bar that calls <code>store.reset()</code> and routes to <code>/upload</code>.</li>
+          <li>Quick mobile sanity check at 360px width — wizard should still be usable.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>No button can be double-clicked into a duplicate request.</li>
+          <li>Every error path surfaces a visible toast.</li>
+          <li>"Start over" works from any wizard step.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-23 -->
+  <article class="pbi ai" id="pbi-23">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-23</span><span class="pbi-name">AI Edge Case Hardening</span></div>
+      <div class="pbi-meta"><span class="owner-pill ai">AI</span><span class="pbi-hours">2h · h16–h18</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Catch the failure modes most likely to show up live during the demo: short blueprints, malformed JSON, marks drift, missing sections. Add prompt guards.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-19</span></p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/ai/blueprint.py</code></li><li><code>backend/ai/generate.py</code></li><li><code>backend/ai/regenerate.py</code></li></ul>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Force-test: feed a 1-page PDF as the only source and verify the Blueprint still returns a sane shape.</li>
+          <li>Force-test: feed a corrupted PDF and verify the error message surfaces cleanly.</li>
+          <li>In the generate prompt, add an explicit sentence: "If you cannot match the marks total exactly, fail loudly by setting <code>total_marks</code> to 0 — do not silently disagree with the blueprint."</li>
+          <li>In the regenerate prompt, add: "Preserve the question's mark value to within ±2 of the original."</li>
+          <li>Add a final validation step that re-runs once if marks deviate &gt; 10% from blueprint total.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Edge-case PDFs don't crash the pipeline.</li>
+          <li>Mark drift &gt; 10% triggers an automatic retry.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- PBI-24 -->
+  <article class="pbi team" id="pbi-24">
+    <div class="pbi-head">
+      <div class="pbi-title"><span class="pbi-id">PBI-24</span><span class="pbi-name">Demo Script + Backup Recording</span></div>
+      <div class="pbi-meta"><span class="owner-pill team">TEAM</span><span class="pbi-hours">1h · h19–h20</span></div>
+    </div>
+    <div class="pbi-body">
+      <p class="pbi-desc">Write the demo script, do two dry runs, record a backup screen capture. If anything fails during the live demo, fall back to the recording.</p>
+      <div class="pbi-grid">
+        <div class="pbi-block">
+          <h4>Depends on</h4>
+          <p><span class="dep-pill">PBI-22</span> and the rest of Sprint 4.</p>
+          <h4>Files touched</h4>
+          <ul><li><code>backend/data/demo_script.md</code></li><li><code>backend/data/demo_backup.mp4</code> (not committed)</li></ul>
+        </div>
+      </div>
+      <div class="pbi-subtasks">
+        <h4>Subtasks</h4>
+        <ol>
+          <li>Write a 5-minute demo script: problem framing (30s), upload (30s), blueprint review (30s), generate (60s — show loading), edit a question + regenerate (60s), export to PDF (60s), wrap-up + roadmap (30s).</li>
+          <li>Decide who clicks, who speaks. Practice once.</li>
+          <li>Record a clean 5-minute screen capture as backup.</li>
+          <li>Confirm Supabase project is healthy, Gemini API key has quota, both <code>localhost:3000</code> and <code>localhost:8000</code> start cleanly on the demo machine.</li>
+          <li>Verify the seeded session from PBI-20 is reachable as a fallback path.</li>
+        </ol>
+      </div>
+      <div class="pbi-accept">
+        <h4>Acceptance</h4>
+        <ul>
+          <li>Demo script saved to <code>backend/data/demo_script.md</code>.</li>
+          <li>Backup recording exists on at least two team members' machines.</li>
+          <li>Live dry-run completes within 5 minutes.</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <div class="milestone">
+    <strong>MILESTONE — h20:</strong> Demo-ready. Either ship the live flow or the backup recording.
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="per-engineer">
+  <h2>8. Per-engineer backlog</h2>
+  <p class="section-lead">Each engineer's PBIs in order — copy your section into your local TODO list and tick off as you go.</p>
+
+  <div class="engineer-section ai">
+    <h3><span class="owner-pill ai">AI</span> &nbsp; AI Engineer — 16h total</h3>
+    <ol>
+      <li><a href="#pbi-04">PBI-04</a> — Gemini SDK Spike + AI Module Skeleton (2h, h0–h2)</li>
+      <li><a href="#pbi-07">PBI-07</a> — Blueprint Extraction Prompt (4h, h2–h6)</li>
+      <li><a href="#pbi-12">PBI-12</a> — Paper Generation Prompt (5h, h8–h13)</li>
+      <li><a href="#pbi-13">PBI-13</a> — Question Regeneration Prompt (1h, h13–h14)</li>
+      <li><a href="#pbi-19">PBI-19</a> — AI Prompt Polish + Retry Wrapper (2h, h14–h16)</li>
+      <li><a href="#pbi-23">PBI-23</a> — AI Edge Case Hardening (2h, h16–h18)</li>
+    </ol>
+    <p style="font-size: 0.85rem; color: var(--ink-muted); margin-top: 8px;">Between h6 and h8 you're on standby — pair with FS1 on the blueprint endpoint integration. Between h18 and h20 help debug live demo issues.</p>
+  </div>
+
+  <div class="engineer-section fs1">
+    <h3><span class="owner-pill fs1">FS1</span> &nbsp; Full-Stack 1 (Backend Lead) — 18h total</h3>
+    <ol>
+      <li><a href="#pbi-02">PBI-02</a> — FastAPI Backend Scaffolding (2h, h0–h2)</li>
+      <li><a href="#pbi-08">PBI-08</a> — Session + Upload + Blueprint Endpoints (6h, h2–h8)</li>
+      <li><a href="#pbi-14">PBI-14</a> — Generate + Edit + Regenerate Endpoints (6h, h8–h14)</li>
+      <li><a href="#pbi-17">PBI-17</a> — Export Endpoint + Next.js Proxy Route (2h, h14–h16)</li>
+      <li><a href="#pbi-21">PBI-21</a> — Error Handling + Health Check (2h, h18–h20)</li>
+    </ol>
+    <p style="font-size: 0.85rem; color: var(--ink-muted); margin-top: 8px;">Between h16 and h18 you're on standby — pair with FE on the iframe proxy edge cases, or help FS2 with the Jinja template.</p>
+  </div>
+
+  <div class="engineer-section fs2">
+    <h3><span class="owner-pill fs2">FS2</span> &nbsp; Full-Stack 2 (Data Lead) — 15h total</h3>
+    <ol>
+      <li><a href="#pbi-01">PBI-01</a> — Supabase Project + Storage Bucket (1h, h0–h1) <strong>← critical path, do FIRST</strong></li>
+      <li><a href="#pbi-03">PBI-03</a> — Database Models + Engine (1h, h1–h2)</li>
+      <li><a href="#pbi-06">PBI-06</a> — Storage Adapter (4h, h2–h6)</li>
+      <li><a href="#pbi-11">PBI-11</a> — Paper Schema + Splice Helper (3h, h5–h8)</li>
+      <li><a href="#pbi-16">PBI-16</a> — Jinja Paper Template + Print CSS (4h, h14–h18)</li>
+      <li><a href="#pbi-20">PBI-20</a> — Seed Data + Smoke Tests (2h, h18–h20)</li>
+    </ol>
+    <p style="font-size: 0.85rem; color: var(--ink-muted); margin-top: 8px;">You have ~5h of slack (h8–h14). Use it: support FS1 with endpoint integration, write quick fixtures for FE, or get a head start on the Jinja template.</p>
+  </div>
+
+  <div class="engineer-section fe">
+    <h3><span class="owner-pill fe">FE</span> &nbsp; Frontend Engineer — 20h total</h3>
+    <ol>
+      <li><a href="#pbi-05">PBI-05</a> — Next.js Frontend Scaffolding (2h, h0–h2)</li>
+      <li><a href="#pbi-09">PBI-09</a> — Upload Page UI (3h, h2–h5)</li>
+      <li><a href="#pbi-10">PBI-10</a> — Blueprint Review Page UI (3h, h5–h8)</li>
+      <li><a href="#pbi-15">PBI-15</a> — Editable Paper Page UI (6h, h8–h14)</li>
+      <li><a href="#pbi-18">PBI-18</a> — Export Preview Page UI (4h, h14–h18)</li>
+      <li><a href="#pbi-22">PBI-22</a> — Loading / Empty / Error States (2h, h18–h20)</li>
+    </ol>
+    <p style="font-size: 0.85rem; color: var(--ink-muted); margin-top: 8px;">You're on the critical path the entire sprint. If you finish early, help with the demo recording (<a href="#pbi-24">PBI-24</a>).</p>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<section id="dod">
+  <h2>9. Global Definition of Done</h2>
+  <p class="section-lead">These apply to every PBI, on top of its own acceptance criteria.</p>
+
+  <ol style="margin-left: 20px; color: var(--ink); font-size: 0.9rem;">
+    <li><strong>Code runs.</strong> The change builds and the relevant <code>npm run dev</code> / <code>uvicorn</code> starts without new errors.</li>
+    <li><strong>No secrets in git.</strong> <code>.env</code> is gitignored; any new keys are added to <code>.env.example</code>.</li>
+    <li><strong>Schemas are stable.</strong> Don't change <code>BlueprintSchema</code> or <code>PaperSchema</code> fields after they're locked at PBI-07 / PBI-11 — extend, don't rename.</li>
+    <li><strong>One commit per PBI minimum.</strong> Commit message format: <code>PBI-XX: short summary</code>.</li>
+    <li><strong>Manual smoke test.</strong> Before posting "PBI-XX done", click through the relevant flow once on your laptop.</li>
+    <li><strong>Stub upstream when needed.</strong> If your PBI's dependencies aren't ready, mock with sample JSON in <code>backend/ai/samples/</code> — never wait idle.</li>
+  </ol>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">If you slip a milestone (h8, h14, h18)</div>
+    <p>Don't try to catch up by working faster. Instead, invoke the next scope cut from <code>build.html §10.2</code> and inform the team in chat: 1) drop per-section regenerate, 2) drop blueprint review (auto-route to paper), 3) drop autosave (explicit Save button), 4) drop per-question regenerate (text edits only), 5) drop print CSS polish (plain HTML), 6) drop the nudge input.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>ShipHappens — Sprint Backlog v0.1</strong></p>
+  <p style="margin-top: 8px;">Companion to <code>build.html</code>. Update the status of each PBI in chat, not in this file.</p>
+</footer>
+
+</body>
+</html>
