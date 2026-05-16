@@ -19,8 +19,11 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
 from google.genai import types
 from pydantic import BaseModel
+
+load_dotenv()  # load backend/.env before ai.client reads GOOGLE_API_KEY
 
 # ── Locate a sample PDF ────────────────────────────────────────────────────
 SAMPLES_DIR = Path(__file__).parent / "samples" / "source"
