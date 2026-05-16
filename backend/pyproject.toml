@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "backend"
 version = "0.1.0"
@@ -14,9 +18,17 @@ dependencies = [
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
     "pymupdf>=1.27.2.3",
+    "pytest>=9.0.3",
     "python-dotenv>=1.2.2",
     "python-multipart>=0.0.28",
     "sqlmodel>=0.0.38",
     "supabase>=2.30.0",
     "uvicorn[standard]>=0.47.0",
 ]
+
+[project.scripts]
+dev = "app.dev:main"
+test = "app.test_runner:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

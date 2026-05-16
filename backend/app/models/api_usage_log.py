@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from uuid import UUID, uuid4
 
 from sqlmodel import Field, SQLModel
@@ -16,4 +16,4 @@ class ApiUsageLog(SQLModel, table=True):
     cost_usd: float = 0.0
     status: str  # "success", "failed", "rate_limited"
     error_message: str | None = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
