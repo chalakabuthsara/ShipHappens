@@ -20,10 +20,17 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from google.genai import types
-from pydantic import BaseModel
 
-load_dotenv()  # load backend/.env before ai.client reads GOOGLE_API_KEY
+# Load .env before any module that reads env vars at import time.
+# Using the absolute path so this works regardless of cwd.
+# override=True replaces any shell env var that is set but empty.
+_env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=_env_path, override=True)
+
+from google.genai import types  # noqa: E402 — must come after load_dotenv
+from pydantic import BaseModel  # noqa: E402
+
+from ai.client import client, fast_model  # noqa: E402 — must come after load_dotenv
 
 # ── Locate a sample PDF ────────────────────────────────────────────────────
 SAMPLES_DIR = Path(__file__).parent / "samples" / "source"
@@ -63,8 +70,6 @@ class PaperSummary(BaseModel):
 
 # ── Main spike logic ───────────────────────────────────────────────────────
 def run(pdf_path: Path) -> PaperSummary:
-    from ai.client import client, fast_model  # noqa: import here so env loads first
-
     # Step 1 — upload the PDF to Gemini Files API
     print(f"[spike] Uploading {pdf_path.name} to Gemini Files API…")
     uploaded_file = client.files.upload(
